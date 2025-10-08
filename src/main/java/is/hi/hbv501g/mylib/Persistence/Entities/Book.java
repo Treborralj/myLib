@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.List;
+
 /******************************************************************************
  * @author Róbert A. Jack
  * Tölvupóstur: ral9@hi.is
@@ -21,7 +23,7 @@ public class Book {
     private String writer;
     private double score;
 
-    //private List<Review> reviews;
+    private List<Review> reviews;
 
     public Book(int id, String name, String genre, String isbn, String writer, double score) {
         this.id = id;
@@ -30,6 +32,10 @@ public class Book {
         this.isbn = isbn;
         this.writer = writer;
         this.score = score;
+    }
+
+    public Book() {
+
     }
 
     public int getId() {

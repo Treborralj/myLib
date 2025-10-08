@@ -6,5 +6,5 @@ package is.hi.hbv501g.mylib.Services;
  * Lýsing : 
  *
  *****************************************************************************/
-public interface prufa {
+public interface PostService {
 }

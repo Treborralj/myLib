@@ -1,6 +1,4 @@
-package is.hi.hbv501g.mylib.Services.Implementation;
-
-import org.springframework.stereotype.Service;
+package is.hi.hbv501g.mylib.Services;
 
 /******************************************************************************
  * @author Róbert A. Jack
@@ -8,6 +6,5 @@ import org.springframework.stereotype.Service;
  * Lýsing : 
  *
  *****************************************************************************/
-@Service
-public class PrufaImplementaion {
+public interface CommentsService {
 }

@@ -1,6 +1,6 @@
-package is.hi.hbv501g.mylib.Controllers;
+package is.hi.hbv501g.mylib.Services;
 
-import org.springframework.web.bind.annotation.RestController;
+import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 
 /******************************************************************************
  * @author Róbert A. Jack
@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
  * Lýsing : 
  *
  *****************************************************************************/
-@RestController
-public class PrufuController {
+public interface BookService {
+    public Book findBookByName(String name);
 }
