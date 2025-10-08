@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
@@ -23,9 +24,9 @@ public class Book {
     private String writer;
     private double score;
 
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
-    public Book(int id, String name, String genre, String isbn, String writer, double score) {
+    public Book(String name, String genre, String isbn, String writer, double score) {
         this.id = id;
         this.name = name;
         this.genre = genre;

@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
@@ -21,14 +22,12 @@ public class Comment {
     private String text;
     private Account account;
     private LocalDateTime time;
-    private List<Comment> childComments;
+    private List<Comment> childComments = new ArrayList<>();
 
-    public Comment(int id, String text, Account account, LocalDateTime time, List<Comment> childComments) {
-        this.id = id;
+    public Comment(String text, Account account, LocalDateTime time) {
         this.text = text;
         this.account = account;
         this.time = time;
-        this.childComments = childComments;
     }
 
     public Comment() {

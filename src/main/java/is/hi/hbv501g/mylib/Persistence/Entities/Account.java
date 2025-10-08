@@ -1,9 +1,8 @@
 package is.hi.hbv501g.mylib.Persistence.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
@@ -16,28 +15,23 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String username;
     private String password;
     private String bio;
     private String profilePic;
-    private List<Account> following;
-    private List<Account> followers;
-    private List<Book>  haveRead;
-    private List<Book>  wantToRead;
-    private List<Book>  amReading;
+    private List<Account> following = new ArrayList<>();
+    private List<Account> followers = new ArrayList<>();
+    private List<Book>  haveRead = new ArrayList<>();
+    private List<Book>  wantToRead = new ArrayList<>();
+    private List<Book>  amReading = new ArrayList<>();
 
-    public Account(int id, String username, String password, String bio, String profilePic, List<Account> following, List<Account> followers, List<Book> haveRead, List<Book> wantToRead, List<Book> amReading) {
-        this.id = id;
+    public Account(String username, String password, String bio, String profilePic) {
         this.username = username;
         this.password = password;
         this.bio = bio;
         this.profilePic = profilePic;
-        this.following = following;
-        this.followers = followers;
-        this.haveRead = haveRead;
-        this.wantToRead = wantToRead;
-        this.amReading = amReading;
     }
 
     public Account() {
