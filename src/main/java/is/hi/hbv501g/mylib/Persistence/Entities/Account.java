@@ -21,10 +21,23 @@ public class Account {
     private String password;
     private String bio;
     private String profilePic;
+    @ManyToMany
+    @JoinTable(name = "account_following", joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id"))
     private List<Account> following = new ArrayList<>();
+    @ManyToMany(mappedBy = "following")
     private List<Account> followers = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "account_have_read", joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  haveRead = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "account_want_to_read", joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  wantToRead = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "account_am_readin", joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  amReading = new ArrayList<>();
 
     public Account(String username, String password, String bio, String profilePic) {

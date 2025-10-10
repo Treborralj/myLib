@@ -1,8 +1,6 @@
 package is.hi.hbv501g.mylib.Persistence.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +15,14 @@ import java.util.List;
 @Table(name = "books")
 public class Book {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private String genre;
     private String isbn;
     private String writer;
     private double score;
-
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     public Book(String name, String genre, String isbn, String writer, double score) {

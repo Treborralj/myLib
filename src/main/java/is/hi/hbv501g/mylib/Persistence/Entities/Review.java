@@ -1,8 +1,6 @@
 package is.hi.hbv501g.mylib.Persistence.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,10 +16,17 @@ import java.util.List;
 @Table(name = "reviews")
 public class Review {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String text;
+    @ManyToOne
+    @JoinColumn(name="account_id")
     private Account account;
+    @ManyToOne
+    @JoinColumn(name="book_id")
+    private Book book;
     private LocalDateTime time;
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
     private double score;
 
