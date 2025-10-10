@@ -17,7 +17,7 @@ public class AccountController {
     }
 
     @PostMapping("/signup")
-    public Account signupPost(Account account){
+    public Account signupPost(@RequestBody Account account){
         Account acc = accountService.findByUsername(account.getUsername());
         if(acc == null){
             accountService.save(account);
@@ -27,7 +27,7 @@ public class AccountController {
         return new Account("account not available", "account not available", "account not available", "account not available");
     }
     @PostMapping("/login")
-    public String loginPost(Account account, HttpSession session){
+    public String loginPost(@RequestBody Account account, HttpSession session){
         Account acc = accountService.login(account);
         if(acc != null){
             session.setAttribute("LoggedInAccount", acc);
