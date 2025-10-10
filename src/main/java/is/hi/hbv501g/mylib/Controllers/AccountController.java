@@ -21,9 +21,7 @@ public class AccountController {
     }
 
     @PostMapping("/signup")
-    public Account signupPost(@RequestBody CreateAccountRequest dto){
-        return accountService.createNewAccount(dto);
-        /*
+    public Account signupPost(@RequestBody Account account){
         Account acc = accountService.findByUsername(account.getUsername());
         if(acc == null){
             accountService.save(account);
@@ -34,7 +32,7 @@ public class AccountController {
         */
     }
     @PostMapping("/login")
-    public String loginPost(Account account, HttpSession session){
+    public String loginPost(@RequestBody Account account, HttpSession session){
         Account acc = accountService.login(account);
         if(acc != null){
             session.setAttribute("LoggedInAccount", acc);
