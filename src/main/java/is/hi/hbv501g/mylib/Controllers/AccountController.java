@@ -30,20 +30,22 @@ public class AccountController {
     public String loginPost(@RequestBody Account account, HttpSession session){
         Account acc = accountService.login(account);
         if(acc != null){
-            session.setAttribute("LoggedInAccount", acc);
+            session.setAttribute("LoggedInAccountId", acc.getId());
             return "Login was succesfull";
         }
         return "login failed";
     }
-    @GetMapping("/loggedin")
-    public Account loggedinGet(HttpSession session){
-        Account sessionAccount = (Account) session.getAttribute("LoggedInUser");
-        if(sessionAccount != null){
-            return sessionAccount;
-        }
-        return new Account("You are not loged in", "You are not loged in", "You are not loged in", "You are not loged in");
+    @GetMapping("/logout")
+    public String logoutGet(HttpSession session){
+        session.invalidate();
+        return "You have been logged out";
     }
-
-
-
+    @GetMapping("/loggedin")
+    public String loggedinGet(HttpSession session){
+        Integer accountId = (Integer) session.getAttribute("LoggedInAccountId");
+        if(accountId != null){
+            return "you are logged in";
+        }
+        return "You are not logged in";
+    }
 }
