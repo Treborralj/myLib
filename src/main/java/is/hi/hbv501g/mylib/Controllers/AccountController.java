@@ -29,7 +29,7 @@ public class AccountController {
         }
         //Það þarf að laga þetta, ákveða hvað gerist ef username er ekki laust // séð um í AccountServiceImplementation
         return new Account("account not available", "account not available", "account not available", "account not available");
-        */
+
     }
     @PostMapping("/login")
     public String loginPost(@RequestBody Account account, HttpSession session){
