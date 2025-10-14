@@ -3,7 +3,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jre
-COPY --from=build /app/target/myLib-0.0.1-SNAPSHOT.jar myLib.jar
+COPY --from=build /target/myLib-0.0.1-SNAPSHOT.jar myLib.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "myLib.jar"]
