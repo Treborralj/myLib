@@ -19,6 +19,8 @@ public class Book {
     private int id;
     private String name;
     private String genre;
+
+    @Column(unique = true, nullable = false)
     private String isbn;
     private String writer;
     private double score;
@@ -26,7 +28,6 @@ public class Book {
     private List<Review> reviews = new ArrayList<>();
 
     public Book(String name, String genre, String isbn, String writer, double score) {
-        this.id = id;
         this.name = name;
         this.genre = genre;
         this.isbn = isbn;
