@@ -1,8 +1,6 @@
 package is.hi.hbv501g.mylib.Persistence.Repositories;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
-
-import org.apache.spark.api.java.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
