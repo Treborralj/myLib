@@ -29,23 +29,29 @@ public class AccountController {
         }
         //Það þarf að laga þetta, ákveða hvað gerist ef username er ekki laust // séð um í AccountServiceImplementation
         return new Account("account not available", "account not available", "account not available", "account not available");
+
     }
     @PostMapping("/login")
     public String loginPost(@RequestBody Account account, HttpSession session){
         Account acc = accountService.login(account);
         if(acc != null){
-            session.setAttribute("LoggedInAccount", acc);
+            session.setAttribute("LoggedInAccountId", acc.getId());
             return "Login was succesfull";
         }
         return "login failed";
     }
+    @GetMapping("/logout")
+    public String logoutGet(HttpSession session){
+        session.invalidate();
+        return "You have been logged out";
+    }
     @GetMapping("/loggedin")
-    public Account loggedinGet(HttpSession session){
-        Account sessionAccount = (Account) session.getAttribute("LoggedInUser");
-        if(sessionAccount != null){
-            return sessionAccount;
+    public String loggedinGet(HttpSession session){
+        Integer accountId = (Integer) session.getAttribute("LoggedInAccountId");
+        if(accountId != null){
+            return "you are logged in";
         }
-        return new Account("You are not loged in", "You are not loged in", "You are not loged in", "You are not loged in");
+        return "You are not logged in";
     }
     @PatchMapping("/{id}")
     public Account updateAccount(@PathVariable int id, @RequestBody UpdateAccountRequest dto){
