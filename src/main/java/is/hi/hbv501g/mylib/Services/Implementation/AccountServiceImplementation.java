@@ -3,12 +3,16 @@ package is.hi.hbv501g.mylib.Services.Implementation;
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Persistence.Repositories.AccountRepository;
 import is.hi.hbv501g.mylib.Services.AccountService;
-import is.hi.hbv501g.mylib.dto.CreateAccountRequest;
-import is.hi.hbv501g.mylib.dto.UpdateAccountRequest;
-import is.hi.hbv501g.mylib.dto.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
+import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -32,7 +36,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public Account updateAccount(int id, UpdateAccountRequest dto) {
+    public UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
@@ -42,22 +46,37 @@ public class AccountServiceImplementation implements AccountService {
         if (dto.getUsername() != null && dto.getUsername().equals(account.getUsername())){
             account.setUsername(dto.getUsername());
         }
-        if (dto.getProfilePic() != null && dto.getProfilePic().equals(account.getProfilePic())){
-            account.setProfilePic(dto.getProfilePic());
-        }
 
+        Account updated = accountRepository.save(account);
+        return new UpdateAccountResponse(updated.getId(), updated.getUsername(), updated.getBio());
+    }
+
+    @Override
+    public void updateProfilePicture(int id, MultipartFile file) throws IOException {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        account.setProfilePic(file.getBytes());
         accountRepository.save(account);
-        return account;
     }
     @Override
-    public Account createNewAccount(CreateAccountRequest dto){
-        if (AccountRepository.existsByUsername(dto.getUsername())) {
-            throw new RuntimeException("username is taken");
-        }
-        Account account =new Account(dto.getUsername(), dto.getPassword(), dto.getBio(), dto.getProfilePic());
-        accountRepository.save(account);
-        return account;
+    public ProfilePictureResponse getProfilePicture(int id){
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        return new ProfilePictureResponse(account);
     }
+
+    @Override
+    public Account createNewAccount(CreateAccountRequest dto){
+        Account account = new Account();
+        account.setUsername(dto.getUsername());
+        account.setPassword(dto.getPassword());
+        return accountRepository.save(account);
+    }
+    @Override
+    public boolean existsByUsername(String username) {
+        return accountRepository.findByUsername(username).isPresent();
+    }
+
     @Override
     /* add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out */
     public void updatePassword(int id, UpdatePasswordRequest dto){
