@@ -3,9 +3,11 @@ package is.hi.hbv501g.mylib.Controllers;
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Services.AccountService;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.SignInRequest;
 import is.hi.hbv501g.mylib.dto.Responses.CreateAccountResponse;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +58,11 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public String loginPost(@RequestBody Account account, HttpSession session){
-        Account acc = accountService.login(account);
-        if(acc != null){
-            session.setAttribute("LoggedInAccountId", acc.getId());
-            return "Login was succesful";
-        }
-        return "login failed";
+    public ResponseEntity<?> loginPost(@RequestBody SignInRequest dto, HttpSession session){
+        SignInResponse response = accountService.login(dto.getUsername(), dto.getPassword());
+        //SignInResponse response = new SignInResponse(acc.getId(), acc.getUsername());
+
+        return ResponseEntity.ok(response);
     }
     @GetMapping("/logout")
     public String logoutGet(HttpSession session){

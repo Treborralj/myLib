@@ -132,4 +132,8 @@ public class Account {
     public void setAmReading(List<Book> amReading) {
         this.amReading = amReading;
     }
+
+    public boolean isPresent() {
+        return this != null;
+    }
 }

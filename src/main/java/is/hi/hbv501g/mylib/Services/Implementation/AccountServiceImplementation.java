@@ -7,6 +7,7 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
+import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -106,18 +109,22 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public Account findByUsername(String username) {
+    public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
 
     @Override
-    public Account login(Account account) {
-        Account acc = findByUsername(account.getUsername());
-        if(acc != null){
-            if(acc.getPassword().equals(account.getPassword())){
-                return acc;
-            }
+    public SignInResponse login(String username, String password) {
+        Optional<Account> acc = findByUsername(username);
+
+        Account account = acc.orElseThrow(()->
+            new IllegalArgumentException("Username not found"));
+
+        // bad form, still need an encoder
+        if (!Objects.equals(password, account.getPassword())){
+            throw new IllegalArgumentException("Invalid Password");
         }
-        return null;
+
+        return new SignInResponse(account.getId(), account.getUsername());
     }
 }

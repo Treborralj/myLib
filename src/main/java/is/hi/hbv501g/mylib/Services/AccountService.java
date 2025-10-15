@@ -5,11 +5,13 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 /******************************************************************************
  * @author Róbert A. Jack
@@ -32,7 +34,7 @@ public interface AccountService {
 
     void updatePassword(int id, UpdatePasswordRequest dto);
     List<Account> findAll();
-    Account findByUsername(String username);
-    Account login(Account account);
+    Optional<Account> findByUsername(String username);
+    SignInResponse login(String username, String password);
 
 }
