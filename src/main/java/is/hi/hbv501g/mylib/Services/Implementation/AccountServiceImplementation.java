@@ -27,18 +27,26 @@ public class AccountServiceImplementation implements AccountService {
     public AccountServiceImplementation(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-
+    /*
+    Save an account to the repository
+     */
     @Override
     public Account save(Account account) {
         return accountRepository.save(account);
     }
 
+    /*
+    removes an account from the repository
+     */
     @Override
     public void delete(Account account) {
         accountRepository.delete(account);
 
     }
 
+    /*
+    Takes in an update request and updates any field that has been changed. returns a response.
+     */
     @Override
     public UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto) {
         Account account = accountRepository.findById(id)
@@ -55,6 +63,9 @@ public class AccountServiceImplementation implements AccountService {
         return new UpdateAccountResponse(updated.getId(), updated.getUsername(), updated.getBio());
     }
 
+    /*
+    updateProfilePicture saves a profile picture to an account, throwing an error if it fails. returns a response entity
+     */
     @Override
     public ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
         MultipartFile file = dto.getFile();
@@ -69,6 +80,10 @@ public class AccountServiceImplementation implements AccountService {
         }
         return new ProfilePictureResponse(account);
     }
+
+    /*
+    fetches the profile picture of an account. returns a response entity containing it converted to 64byte string.
+     */
     @Override
     public ProfilePictureResponse getProfilePicture(int id){
         Account account = accountRepository.findById(id)
@@ -76,6 +91,9 @@ public class AccountServiceImplementation implements AccountService {
         return new ProfilePictureResponse(account);
     }
 
+    /*
+    Creates a new account object and saves it to the repository
+    */
     @Override
     public Account createNewAccount(CreateAccountRequest dto){
         Account account = new Account();
@@ -83,13 +101,19 @@ public class AccountServiceImplementation implements AccountService {
         account.setPassword(dto.getPassword());
         return accountRepository.save(account);
     }
+
+    /*
+    checks if an entity exist in the repository based on username
+     */
     @Override
     public boolean existsByUsername(String username) {
         return accountRepository.findByUsername(username).isPresent();
     }
 
     @Override
-    /* add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out */
+    /*
+    add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out
+    */
     public void updatePassword(int id, UpdatePasswordRequest dto){
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
@@ -102,6 +126,9 @@ public class AccountServiceImplementation implements AccountService {
 
     }
 
+    /*
+    private method for confirming if two passwords match. Throws an error if they don't match
+     */
     private void confirmNewPassword(String newPassword, String confirmPassword){
         if (newPassword == null || confirmPassword == null){
             throw new RuntimeException("Both password fields must be provided");
@@ -111,16 +138,24 @@ public class AccountServiceImplementation implements AccountService {
         }
     }
 
+    /*
+    Returns a list of all accounts
+     */
     @Override
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
-
+    /*
+    finds a account based on username and returns that account. if it does not exist, it returns null
+     */
     @Override
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
-
+    /*
+    takes in a username and password and check if they match with the repository. if they do, it returns a response.
+    This throws an error if either field do not mach with stored info.
+     */
     @Override
     public SignInResponse login(String username, String password) {
         Optional<Account> acc = findByUsername(username);

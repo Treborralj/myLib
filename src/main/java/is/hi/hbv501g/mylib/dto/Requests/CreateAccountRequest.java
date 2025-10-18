@@ -1,5 +1,8 @@
 package is.hi.hbv501g.mylib.dto.Requests;
+/*
+A small data transfer package for creating accounts. It contains a String for a username and a string for password
 
+ */
 public class CreateAccountRequest {
     private String username;
     private String password;

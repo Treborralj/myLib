@@ -39,6 +39,11 @@ public class AccountController {
     }*/
 
     // ný aðferð fyrir signup, er með error message núna og notar frekar Request/Response fyrir öryggi
+
+    /*
+    SignupFixed is a new method for signup. A request is made to form according to CreateAccountRequest from JSON body
+    it checks if a username is taken and if not, creates a new basic user before returning a status response
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> signupFixed(@RequestBody CreateAccountRequest dto){
         if(accountService.existsByUsername(dto.getUsername())){
@@ -56,6 +61,10 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /*
+    A login method. the Signin requests requires a username and password. if the username exists, the password is
+    compared. if everything is a match, the response is returned
+     */
     @PostMapping("/login")
     public ResponseEntity<?> loginPost(@RequestBody SignInRequest dto, HttpSession session){
         SignInResponse response = accountService.login(dto.getUsername(), dto.getPassword());
@@ -63,11 +72,19 @@ public class AccountController {
 
         return ResponseEntity.ok(response);
     }
+
+    /*
+    this method invalidates all session info and logs the user out
+     */
     @GetMapping("/logout")
     public String logoutGet(HttpSession session){
         session.invalidate();
         return "You have been logged out";
     }
+
+     /*
+     this method takes in the httpSession token and checks if a user is logged in or not
+      */
     @GetMapping("/loggedin")
     public String loggedinGet(HttpSession session){
         Integer accountId = (Integer) session.getAttribute("LoggedInAccountId");
@@ -76,22 +93,39 @@ public class AccountController {
         }
         return "You are not logged in";
     }
+    /*
+    This method takes an accounts id and an update request for said account. this cannot change passwords, see
+    UpdatePassword() due to different handling. After updating account in repository a response is returned
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateAccount(@PathVariable int id, @RequestBody UpdateAccountRequest dto){
         UpdateAccountResponse response = accountService.updateAccount(id, dto);
         return ResponseEntity.ok(response);
     }
+
+    /*
+    This method compares an account id for a password update.. it takes in a request and if successful, returns a response
+     */
     @PatchMapping("/{id}/password")
     public ResponseEntity<?> updatePassword(@PathVariable int id, @RequestBody UpdatePasswordRequest dto){
         accountService.updatePassword(id, dto);
         return ResponseEntity.ok("password updated succesfully");
     }
 
+
+    /*
+    This method takes in a id and request info for changing profile picture. if this fails an error is thrown. a
+    response is returned once finished
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
         ProfilePictureResponse response = accountService.updateProfilePicture(id, dto);
         return ResponseEntity.ok(response);
     }
+
+    /*
+    this method fetches a profile picture from an account and returns in a response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> getProfilePicture(@PathVariable int id) {
         ProfilePictureResponse response = accountService.getProfilePicture(id);

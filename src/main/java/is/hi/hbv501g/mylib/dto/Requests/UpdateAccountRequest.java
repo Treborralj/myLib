@@ -1,5 +1,9 @@
 package is.hi.hbv501g.mylib.dto.Requests;
 
+/*
+This object is for updating Account information. currently only username and bio are here. any other account related
+changes except for password are stored here.
+ */
 public class UpdateAccountRequest {
     private String username;
     private String bio;

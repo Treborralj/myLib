@@ -1,5 +1,8 @@
 package is.hi.hbv501g.mylib.dto.Requests;
 
+/*
+A small package for logging in. this item has a string for username and a string for password.
+ */
 public class SignInRequest {
     private String username;
     private String password;
