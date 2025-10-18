@@ -1,4 +1,4 @@
-package is.hi.hbv501g.mylib.dto;
+package is.hi.hbv501g.mylib.dto.Requests;
 
 public class UpdatePasswordRequest {
     private String oldPassword;
