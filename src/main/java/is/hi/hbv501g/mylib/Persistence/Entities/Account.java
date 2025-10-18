@@ -20,7 +20,11 @@ public class Account {
     private String username;
     private String password;
     private String bio;
-    private String profilePic;
+
+    @Lob
+    @Column(columnDefinition = "BYTEA")
+    private byte[] profilePic;
+
     @ManyToMany
     @JoinTable(name = "account_following", joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id"))
@@ -40,11 +44,10 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  amReading = new ArrayList<>();
 
-    public Account(String username, String password, String bio, String profilePic) {
+    public Account(String username, String password, String bio) {
         this.username = username;
         this.password = password;
         this.bio = bio;
-        this.profilePic = profilePic;
     }
 
     public Account() {
@@ -82,11 +85,11 @@ public class Account {
         this.bio = bio;
     }
 
-    public String getProfilePic() {
+    public byte[] getProfilePic() {
         return profilePic;
     }
 
-    public void setProfilePic(String profilePic) {
+    public void setProfilePic(byte[] profilePic) {
         this.profilePic = profilePic;
     }
 
@@ -128,5 +131,9 @@ public class Account {
 
     public void setAmReading(List<Book> amReading) {
         this.amReading = amReading;
+    }
+
+    public boolean isPresent() {
+        return this != null;
     }
 }
