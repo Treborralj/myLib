@@ -2,6 +2,7 @@ package is.hi.hbv501g.mylib.Services;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
@@ -24,7 +25,7 @@ public interface AccountService {
     void delete(Account account);
     UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto);
 
-    void updateProfilePicture(int id, MultipartFile file) throws IOException;
+    ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException;
 
     ProfilePictureResponse getProfilePicture(int id);
 

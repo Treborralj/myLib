@@ -2,11 +2,9 @@ package is.hi.hbv501g.mylib.Controllers;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Services.AccountService;
-import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
-import is.hi.hbv501g.mylib.dto.Requests.SignInRequest;
+import is.hi.hbv501g.mylib.dto.Requests.*;
 import is.hi.hbv501g.mylib.dto.Responses.CreateAccountResponse;
-import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
-import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -88,5 +87,14 @@ public class AccountController {
         return ResponseEntity.ok("password updated succesfully");
     }
 
-
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
+        ProfilePictureResponse response = accountService.updateProfilePicture(id, dto);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProfilePicture(@PathVariable int id) {
+        ProfilePictureResponse response = accountService.getProfilePicture(id);
+        return ResponseEntity.ok(response);
+    }
 }

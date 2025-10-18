@@ -22,7 +22,7 @@ public class Account {
     private String bio;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    @Column(columnDefinition = "BYTEA")
     private byte[] profilePic;
 
     @ManyToMany

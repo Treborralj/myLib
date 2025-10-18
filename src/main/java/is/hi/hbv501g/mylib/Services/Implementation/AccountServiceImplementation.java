@@ -4,6 +4,7 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Persistence.Repositories.AccountRepository;
 import is.hi.hbv501g.mylib.Services.AccountService;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
@@ -55,11 +56,18 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     @Override
-    public void updateProfilePicture(int id, MultipartFile file) throws IOException {
+    public ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
+        MultipartFile file = dto.getFile();
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-        account.setProfilePic(file.getBytes());
-        accountRepository.save(account);
+
+        try {
+            account.setProfilePic(file.getBytes());
+            accountRepository.save(account);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+        return new ProfilePictureResponse(account);
     }
     @Override
     public ProfilePictureResponse getProfilePicture(int id){
@@ -127,4 +135,5 @@ public class AccountServiceImplementation implements AccountService {
 
         return new SignInResponse(account.getId(), account.getUsername());
     }
+
 }
