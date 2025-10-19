@@ -19,10 +19,10 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String text;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="account_id")
     private Account account;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name="book_id")
     private Book book;
     private LocalDateTime time;
@@ -30,9 +30,10 @@ public class Review {
     private List<Comment> comments = new ArrayList<>();
     private double score;
 
-    public Review( String text, Account account, LocalDateTime time, double score) {
+    public Review( String text, Account account, Book book, LocalDateTime time, double score) {
         this.text = text;
         this.account = account;
+        this.book = book;
         this.time = time;
         this.score = score;
     }
@@ -62,6 +63,14 @@ public class Review {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public LocalDateTime getTime() {
