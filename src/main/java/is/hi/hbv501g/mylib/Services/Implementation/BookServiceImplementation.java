@@ -134,8 +134,8 @@ public class BookServiceImplementation implements BookService {
      * @return a list of {@link Book} objects matching the given parameters.
      */
     @Override
-    public List<Book> findBooks(String name, String genre, String isbn, String writer, Double score) {
-        return bookRepository.searchBooks(name, genre, isbn, writer, score);
+    public List<Book> findBooks(Integer id,String name, String genre, String isbn, String writer, Double score) {
+        return bookRepository.searchBooks(id,name, genre, isbn, writer, score);
     }
     
 

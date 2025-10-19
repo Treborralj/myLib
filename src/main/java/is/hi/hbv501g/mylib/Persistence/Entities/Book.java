@@ -86,4 +86,5 @@ public class Book {
     public void setScore(double score) {
         this.score = score;
     }
+    
 }

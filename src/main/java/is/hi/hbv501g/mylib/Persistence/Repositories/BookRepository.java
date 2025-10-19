@@ -32,6 +32,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
      * searchBooks("Harry", "Fantasy", null, "Rowling", null);
      * </pre>
      *
+     * @param id the books id (optional)
      * @param name  title or part of it. (optional)
      * @param genre genre or part of it. (optional)
      * @param isbn  ISBN or part of it. (optional)
@@ -39,20 +40,26 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
      * @param score score (exact match). (optional)
      * @return a list of {@link Book} entities matching the criteria.
      */
-        @Query("""
-        SELECT b FROM Book b
-        WHERE (:name   IS NULL OR LOWER(b.name)   LIKE LOWER(CONCAT('%', :name, '%')))
-        AND (:genre  IS NULL OR LOWER(b.genre)  LIKE LOWER(CONCAT('%', :genre, '%')))
-        AND (:isbn   IS NULL OR b.isbn          LIKE CONCAT('%', :isbn, '%'))
-        AND (:writer IS NULL OR LOWER(b.writer) LIKE LOWER(CONCAT('%', :writer, '%')))
+    @Query(
+    value = """
+        SELECT *
+        FROM books b
+        WHERE (:id     IS NULL OR b.id = :id)
+        AND (:name   IS NULL OR b.name   ILIKE CONCAT('%', :name, '%'))
+        AND (:genre  IS NULL OR b.genre  ILIKE CONCAT('%', :genre, '%'))
+        AND (:isbn   IS NULL OR b.isbn    LIKE CONCAT('%', :isbn, '%'))
+        AND (:writer IS NULL OR b.writer ILIKE CONCAT('%', :writer, '%'))
         AND (:score  IS NULL OR b.score = :score)
-        """)
+    """,
+    nativeQuery = true
+    )
     List<Book> searchBooks(
-        @Param("name") String name,
-        @Param("genre") String genre,
-        @Param("isbn") String isbn,
-        @Param("writer") String writer,
-        @Param("score") Double score
+    @Param("id") Integer id,
+    @Param("name") String name,
+    @Param("genre") String genre,
+    @Param("isbn") String isbn,
+    @Param("writer") String writer,
+    @Param("score") Double score
     );
 
 }

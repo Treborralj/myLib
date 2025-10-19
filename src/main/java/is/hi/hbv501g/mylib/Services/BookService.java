@@ -19,6 +19,6 @@ public interface BookService {
 
     public void deleteBook(int id);
     public void deleteBook(Book book);
-    List<Book> findBooks(String name, String genre, String isbn, String writer, Double score);
+    List<Book> findBooks(Integer id,String name, String genre, String isbn, String writer, Double score);
 
 }
