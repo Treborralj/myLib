@@ -115,38 +115,86 @@ public class AccountController {
         accountService.updatePassword(id, dto);
         return ResponseEntity.ok("password updated succesfully");
     }
+
+    /**
+     *  Takes in an account id and returns the wantToRead list associated with the account
+      * @param accountId
+     * @return List<Book>
+     */
     @GetMapping("/wantToRead/{accountId}")
     public List<Book> getWantToRead(@PathVariable int accountId) {
         return accountService.getWantToRead(accountId);
     }
+
+    /**
+     * Takes in an account id and a book and adds the book to the wantToRead list associated with the account
+     * @param accountId
+     * @param book
+     */
     @PostMapping("/wantToReadAdd/{accountId}")
     public void addBookToWantToRead(@PathVariable int accountId, @RequestBody Book book){
         accountService.addBookToWantToRead(accountId, book);
     }
+
+    /**
+     * Takes in an account id and a book id and removes the book from the wantToRead list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @DeleteMapping("/wantToReadRemove/{accountId}/{bookId}")
     public void removeBookFromWantToRead(@PathVariable int accountId, @PathVariable int bookId){
         accountService.removeBookFromWantToRead(accountId, bookId);
     }
+    /**
+     *  Takes in an account id and returns the haveRead list associated with the account
+     * @param accountId
+     * @return List<Book>
+     */
     @GetMapping("/haveRead/{accountId}")
     public List<Book> getHaveRead(@PathVariable int accountId) {
         return accountService.getHaveRead(accountId);
     }
+    /**
+     * Takes in an account id and a book and adds the book to the haveRead list associated with the account
+     * @param accountId
+     * @param book
+     */
     @PostMapping("/haveReadAdd/{accountId}")
     public void addBookToHaveRead(@PathVariable int accountId, @RequestBody Book book){
         accountService.addBookToHaveRead(accountId, book);
     }
+    /**
+     * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @DeleteMapping("/haveReadRemove/{accountId}/{bookId}")
     public void removeBookFromHaveRead(@PathVariable int accountId, @PathVariable int bookId){
         accountService.removeBookFromHaveRead(accountId, bookId);
     }
+    /**
+     *  Takes in an account id and returns the amReading list associated with the account
+     * @param accountId
+     * @return List<Book>
+     */
     @GetMapping("/amReading/{accountId}")
     public List<Book> getAmReading(@PathVariable int accountId) {
         return accountService.getAmReading(accountId);
     }
+    /**
+     * Takes in an account id and a book and adds the book to the amReading list associated with the account
+     * @param accountId
+     * @param book
+     */
     @PostMapping("/amReadingAdd/{accountId}")
     public void addBookToAmReading(@PathVariable int accountId, @RequestBody Book book){
         accountService.addBookToAmReading(accountId, book);
     }
+    /**
+     * Takes in an account id and a book id and removes the book from the amReading list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @DeleteMapping("/amReadingRemove/{accountId}/{bookId}")
     public void removeBookFromAmReading(@PathVariable int accountId, @PathVariable int bookId){
         accountService.removeBookFromAmReading(accountId, bookId);

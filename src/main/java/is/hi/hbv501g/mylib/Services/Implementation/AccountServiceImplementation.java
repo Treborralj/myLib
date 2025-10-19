@@ -169,7 +169,11 @@ public class AccountServiceImplementation implements AccountService {
         return new SignInResponse(account.getId(), account.getUsername());
     }
 
-
+    /**
+     * Takes in an account id and returns the wantToRead list associated with the account
+     * @param accountId
+     * @return
+     */
     @Transactional
     @Override
     public List<Book> getWantToRead(int accountId) {
@@ -177,6 +181,12 @@ public class AccountServiceImplementation implements AccountService {
         System.out.println(account.getWantToRead());
         return account.getWantToRead();
     }
+
+    /**
+     * Takes in an account id and a book and adds the book to the wantToRead list associated with the account
+     * @param accountId
+     * @param book
+     */
     @Transactional
     @Override
     public void addBookToWantToRead(int accountId, Book book) {
@@ -184,6 +194,12 @@ public class AccountServiceImplementation implements AccountService {
         account.getWantToRead().add(book);
         accountRepository.save(account);
     }
+
+    /**
+     * Takes in an account id and a book id and removes the book from the wantToRead list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @Transactional
     @Override
     public void removeBookFromWantToRead(int accountId, int bookId) {
@@ -196,6 +212,12 @@ public class AccountServiceImplementation implements AccountService {
         }
         accountRepository.save(account);
     }
+
+    /**
+     * Takes in an account id and returns the haveRead list associated with the account
+     * @param accountId
+     * @return
+     */
     @Transactional
     @Override
     public List<Book> getHaveRead(int accountId) {
@@ -203,6 +225,12 @@ public class AccountServiceImplementation implements AccountService {
         System.out.println(account.getHaveRead());
         return account.getHaveRead();
     }
+
+    /**
+     * Takes in an account id and a book and adds the book to the haveRead list associated with the account
+     * @param accountId
+     * @param book
+     */
     @Transactional
     @Override
     public void addBookToHaveRead(int accountId, Book book) {
@@ -210,6 +238,12 @@ public class AccountServiceImplementation implements AccountService {
         account.getHaveRead().add(book);
         accountRepository.save(account);
     }
+
+    /**
+     * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @Transactional
     @Override
     public void removeBookFromHaveRead(int accountId, int bookId) {
@@ -222,6 +256,12 @@ public class AccountServiceImplementation implements AccountService {
         }
         accountRepository.save(account);
     }
+
+    /**
+     * Takes in an account id and returns the amReading list associated with the account
+     * @param accountId
+     * @return
+     */
     @Transactional
     @Override
     public List<Book> getAmReading(int accountId) {
@@ -229,6 +269,12 @@ public class AccountServiceImplementation implements AccountService {
         System.out.println(account.getAmReading());
         return account.getAmReading();
     }
+
+    /**
+     * Takes in an account id and a book and adds the book to the amReading list associated with the account
+     * @param accountId
+     * @param book
+     */
     @Transactional
     @Override
     public void addBookToAmReading(int accountId, Book book) {
@@ -236,6 +282,12 @@ public class AccountServiceImplementation implements AccountService {
         account.getAmReading().add(book);
         accountRepository.save(account);
     }
+
+    /**
+     * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
+     * @param accountId
+     * @param bookId
+     */
     @Transactional
     @Override
     public void removeBookFromAmReading(int accountId, int bookId) {
