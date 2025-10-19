@@ -1,6 +1,7 @@
 package is.hi.hbv501g.mylib.Services.Implementation;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
+import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.Persistence.Repositories.AccountRepository;
 import is.hi.hbv501g.mylib.Services.AccountService;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
@@ -12,6 +13,7 @@ import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -49,8 +51,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
 
         if (dto.getBio() != null && dto.getBio().equals(account.getBio())){
             account.setBio(dto.getBio());
@@ -69,8 +70,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
         MultipartFile file = dto.getFile();
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
 
         try {
             account.setProfilePic(file.getBytes());
@@ -86,8 +86,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public ProfilePictureResponse getProfilePicture(int id){
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
         return new ProfilePictureResponse(account);
     }
 
@@ -115,8 +114,7 @@ public class AccountServiceImplementation implements AccountService {
     add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out
     */
     public void updatePassword(int id, UpdatePasswordRequest dto){
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
         confirmNewPassword(dto.getNewPassword(), dto.getConfirmPassword());
         if(!dto.getOldPassword().equals(account.getPassword())){
             throw new RuntimeException("Current password is incorrect");
@@ -171,4 +169,83 @@ public class AccountServiceImplementation implements AccountService {
         return new SignInResponse(account.getId(), account.getUsername());
     }
 
+
+    @Transactional
+    @Override
+    public List<Book> getWantToRead(int accountId) {
+        Account account = accountRepository.findById(accountId);
+        System.out.println(account.getWantToRead());
+        return account.getWantToRead();
+    }
+    @Transactional
+    @Override
+    public void addBookToWantToRead(int accountId, Book book) {
+        Account account = accountRepository.findById(accountId);
+        account.getWantToRead().add(book);
+        accountRepository.save(account);
+    }
+    @Transactional
+    @Override
+    public void removeBookFromWantToRead(int accountId, int bookId) {
+        Account account = accountRepository.findById(accountId);
+        for(Book book : account.getWantToRead()) {
+            if(book.getId() == bookId) {
+                account.getWantToRead().remove(book);
+                break;
+            }
+        }
+        accountRepository.save(account);
+    }
+    @Transactional
+    @Override
+    public List<Book> getHaveRead(int accountId) {
+        Account account = accountRepository.findById(accountId);
+        System.out.println(account.getHaveRead());
+        return account.getHaveRead();
+    }
+    @Transactional
+    @Override
+    public void addBookToHaveRead(int accountId, Book book) {
+        Account account = accountRepository.findById(accountId);
+        account.getHaveRead().add(book);
+        accountRepository.save(account);
+    }
+    @Transactional
+    @Override
+    public void removeBookFromHaveRead(int accountId, int bookId) {
+        Account account = accountRepository.findById(accountId);
+        for(Book book : account.getHaveRead()) {
+            if(book.getId() == bookId) {
+                account.getHaveRead().remove(book);
+                break;
+            }
+        }
+        accountRepository.save(account);
+    }
+    @Transactional
+    @Override
+    public List<Book> getAmReading(int accountId) {
+        Account account = accountRepository.findById(accountId);
+        System.out.println(account.getAmReading());
+        return account.getAmReading();
+    }
+    @Transactional
+    @Override
+    public void addBookToAmReading(int accountId, Book book) {
+        Account account = accountRepository.findById(accountId);
+        account.getAmReading().add(book);
+        accountRepository.save(account);
+    }
+    @Transactional
+    @Override
+    public void removeBookFromAmReading(int accountId, int bookId) {
+        Account account = accountRepository.findById(accountId);
+        for(Book book : account.getAmReading()) {
+            if(book.getId() == bookId) {
+                account.getAmReading().remove(book);
+                break;
+            }
+        }
+        accountRepository.save(account);
+    }
 }

@@ -10,7 +10,13 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Account save(Account account);
     void delete(Account account);
+    void deleteById(int id);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
 
+    //Account findByUsername(String username);
+    Account findById(int id);
+    static boolean existsByUsername(String username) {
+        return false;
+    }
 }

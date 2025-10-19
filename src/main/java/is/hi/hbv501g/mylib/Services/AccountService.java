@@ -9,6 +9,10 @@ import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.web.multipart.MultipartFile;
+import is.hi.hbv501g.mylib.Persistence.Entities.Book;
+import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,4 +42,13 @@ public interface AccountService {
     Optional<Account> findByUsername(String username);
     SignInResponse login(String username, String password);
 
+    void addBookToWantToRead(int accountId, Book book);
+    void addBookToHaveRead(int accountId, Book book);
+    void addBookToAmReading(int accountId, Book book);
+    List<Book> getWantToRead(int accountId);
+    List<Book> getHaveRead(int accountId);
+    List<Book> getAmReading(int accountId);
+    void removeBookFromHaveRead(int accountId, int bookId);
+    void removeBookFromWantToRead(int accountId, int bookId);
+    void removeBookFromAmReading(int accountId, int bookId);
 }
