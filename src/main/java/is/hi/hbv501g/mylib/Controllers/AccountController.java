@@ -1,6 +1,7 @@
 package is.hi.hbv501g.mylib.Controllers;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
+import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.Services.AccountService;
 import is.hi.hbv501g.mylib.dto.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.UpdateAccountRequest;
@@ -9,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -62,6 +65,41 @@ public class AccountController {
         accountService.updatePassword(id, dto);
         return ResponseEntity.ok("password updated succesfully");
     }
-
+    @GetMapping("/wantToRead/{accountId}")
+    public List<Book> getWantToRead(@PathVariable int accountId) {
+        return accountService.getWantToRead(accountId);
+    }
+    @PostMapping("/wantToReadAdd/{accountId}")
+    public void addBookToWantToRead(@PathVariable int accountId, @RequestBody Book book){
+        accountService.addBookToWantToRead(accountId, book);
+    }
+    @DeleteMapping("/wantToReadRemove/{accountId}/{bookId}")
+    public void removeBookFromWantToRead(@PathVariable int accountId, @PathVariable int bookId){
+        accountService.removeBookFromWantToRead(accountId, bookId);
+    }
+    @GetMapping("/haveRead/{accountId}")
+    public List<Book> getHaveRead(@PathVariable int accountId) {
+        return accountService.getHaveRead(accountId);
+    }
+    @PostMapping("/haveReadAdd/{accountId}")
+    public void addBookToHaveRead(@PathVariable int accountId, @RequestBody Book book){
+        accountService.addBookToHaveRead(accountId, book);
+    }
+    @DeleteMapping("/haveReadRemove/{accountId}/{bookId}")
+    public void removeBookFromHaveRead(@PathVariable int accountId, @PathVariable int bookId){
+        accountService.removeBookFromHaveRead(accountId, bookId);
+    }
+    @GetMapping("/amReading/{accountId}")
+    public List<Book> getAmReading(@PathVariable int accountId) {
+        return accountService.getAmReading(accountId);
+    }
+    @PostMapping("/amReadingAdd/{accountId}")
+    public void addBookToAmReading(@PathVariable int accountId, @RequestBody Book book){
+        accountService.addBookToAmReading(accountId, book);
+    }
+    @DeleteMapping("/amReadingRemove/{accountId}/{bookId}")
+    public void removeBookFromAmReading(@PathVariable int accountId, @PathVariable int bookId){
+        accountService.removeBookFromAmReading(accountId, bookId);
+    }
 
 }
