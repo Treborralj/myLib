@@ -10,9 +10,9 @@ import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.web.multipart.MultipartFile;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
-import is.hi.hbv501g.mylib.dto.CreateAccountRequest;
-import is.hi.hbv501g.mylib.dto.UpdateAccountRequest;
-import is.hi.hbv501g.mylib.dto.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
+import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 
 import java.io.IOException;
 import java.util.List;

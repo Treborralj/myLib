@@ -14,7 +14,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
 
-    Account findByUsername(String username);
+    //Account findByUsername(String username);
     Account findById(int id);
     static boolean existsByUsername(String username) {
         return false;

@@ -51,8 +51,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
 
         if (dto.getBio() != null && dto.getBio().equals(account.getBio())){
             account.setBio(dto.getBio());
@@ -71,8 +70,7 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
         MultipartFile file = dto.getFile();
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
 
         try {
             account.setProfilePic(file.getBytes());
@@ -88,8 +86,7 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public ProfilePictureResponse getProfilePicture(int id){
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        Account account = accountRepository.findById(id);
         return new ProfilePictureResponse(account);
     }
 

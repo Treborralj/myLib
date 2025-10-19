@@ -71,6 +71,7 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<?> loginPost(@RequestBody SignInRequest dto, HttpSession session){
         SignInResponse response = accountService.login(dto.getUsername(), dto.getPassword());
+        session.setAttribute("LoggedInAccountId", response.getId());
         //SignInResponse response = new SignInResponse(acc.getId(), acc.getUsername());
 
         return ResponseEntity.ok(response);
@@ -155,7 +156,7 @@ public class AccountController {
     This method takes in a id and request info for changing profile picture. if this fails an error is thrown. a
     response is returned once finished
      */
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/pic")
     public ResponseEntity<?> updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
         ProfilePictureResponse response = accountService.updateProfilePicture(id, dto);
         return ResponseEntity.ok(response);
