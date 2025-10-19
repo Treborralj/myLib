@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
- * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
+ * @author Rúnar Ágúst
+ * Tölvupóstur: ras89@hi.is
  * Lýsing : 
  *
  *****************************************************************************/
@@ -86,4 +86,5 @@ public class Book {
     public void setScore(double score) {
         this.score = score;
     }
+    
 }

@@ -5,8 +5,8 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import java.util.List;
 
 /******************************************************************************
- * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
+ * @author Rúnar Ágúst
+ * Tölvupóstur: ras89@hi.is
  * Lýsing : 
  *
  *****************************************************************************/
@@ -19,6 +19,6 @@ public interface BookService {
 
     public void deleteBook(int id);
     public void deleteBook(Book book);
-    List<Book> findBooks(String name, String genre, String isbn, String writer, Double score);
+    List<Book> findBooks(Integer id,String name, String genre, String isbn, String writer, Double score);
 
 }
