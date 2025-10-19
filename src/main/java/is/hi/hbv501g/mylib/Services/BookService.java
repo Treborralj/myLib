@@ -5,8 +5,8 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import java.util.List;
 
 /******************************************************************************
- * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
+ * @author Rúnar Ágúst
+ * Tölvupóstur: ras89@hi.is
  * Lýsing : 
  *
  *****************************************************************************/

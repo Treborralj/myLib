@@ -18,6 +18,27 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     Book findByIsbn(String isbn);
 
 
+
+
+
+
+    /**
+     * Searches books using optional filter parameters.
+     * Each parameter can be null and only declared parameters will be included in the query.
+     *
+     *
+     * Example:
+     * <pre>
+     * searchBooks("Harry", "Fantasy", null, "Rowling", null);
+     * </pre>
+     *
+     * @param name  title or part of it. (optional)
+     * @param genre genre or part of it. (optional)
+     * @param isbn  ISBN or part of it. (optional)
+     * @param writer writer’s name or part of it. (optional)
+     * @param score score (exact match). (optional)
+     * @return a list of {@link Book} entities matching the criteria.
+     */
         @Query("""
         SELECT b FROM Book b
         WHERE (:name   IS NULL OR LOWER(b.name)   LIKE LOWER(CONCAT('%', :name, '%')))
