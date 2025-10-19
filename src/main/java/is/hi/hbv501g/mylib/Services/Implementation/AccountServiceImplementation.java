@@ -98,6 +98,7 @@ public class AccountServiceImplementation implements AccountService {
         Account account = new Account();
         account.setUsername(dto.getUsername());
         account.setPassword(dto.getPassword());
+        account.setProfilePic(new byte[500]);
         return accountRepository.save(account);
     }
 

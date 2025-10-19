@@ -24,7 +24,7 @@ public class Book {
     private String isbn;
     private String writer;
     private double score;
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     public Book(String name, String genre, String isbn, String writer, double score) {
@@ -86,4 +86,6 @@ public class Book {
     public void setScore(double score) {
         this.score = score;
     }
+
+    public List<Review> getReviews() {return reviews;}
 }
