@@ -150,6 +150,10 @@ public class AccountServiceImplementation implements AccountService {
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
+    @Override
+    public List<Account> discoverAccountByUsername(String partialUsername){
+        return accountRepository.findByUsernameContainingIgnoreCase(partialUsername);
+    }
     /*
     takes in a username and password and check if they match with the repository. if they do, it returns a response.
     This throws an error if either field do not mach with stored info.

@@ -40,6 +40,7 @@ public interface AccountService {
     void updatePassword(int id, UpdatePasswordRequest dto);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
+    List<Account> discoverAccountByUsername(String partialUsername);
     SignInResponse login(String username, String password);
 
     void addBookToWantToRead(int accountId, Book book);

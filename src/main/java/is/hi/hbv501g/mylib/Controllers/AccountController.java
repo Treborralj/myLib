@@ -4,10 +4,7 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.Services.AccountService;
 import is.hi.hbv501g.mylib.dto.Requests.*;
-import is.hi.hbv501g.mylib.dto.Responses.CreateAccountResponse;
-import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
-import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
-import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
+import is.hi.hbv501g.mylib.dto.Responses.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +15,7 @@ import java.util.List;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -217,5 +215,16 @@ public class AccountController {
     public ResponseEntity<?> getProfilePicture(@PathVariable int id) {
         ProfilePictureResponse response = accountService.getProfilePicture(id);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Returns a list of accounts matching the given string. If no account is found and empty list
+     * is returned.
+     * @param accountUsername
+     * @return a list of accounts matching the given string.
+     */
+    @GetMapping("/searchUser")
+    public List<Account> discoverUserByUsername(@RequestParam String accountUsername){
+        return accountService.discoverAccountByUsername(accountUsername);
     }
 }
