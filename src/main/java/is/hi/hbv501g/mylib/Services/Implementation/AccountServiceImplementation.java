@@ -12,6 +12,7 @@ import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,9 +26,11 @@ import java.util.Optional;
 @Service
 public class AccountServiceImplementation implements AccountService {
     private AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
     @Autowired
-    public AccountServiceImplementation(AccountRepository accountRepository) {
+    public AccountServiceImplementation(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     /*
     Save an account to the repository
@@ -43,15 +46,15 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public void delete(Account account) {
         accountRepository.delete(account);
-
     }
 
     /*
     Takes in an update request and updates any field that has been changed. returns a response.
      */
     @Override
-    public UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto) {
-        Account account = accountRepository.findById(id);
+    public UpdateAccountResponse updateAccount(String username, UpdateAccountRequest dto) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
 
         if (dto.getBio() != null && dto.getBio().equals(account.getBio())){
             account.setBio(dto.getBio());
@@ -68,9 +71,10 @@ public class AccountServiceImplementation implements AccountService {
     updateProfilePicture saves a profile picture to an account, throwing an error if it fails. returns a response entity
      */
     @Override
-    public ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException {
+    public ProfilePictureResponse updateProfilePicture(String username, ProfilePictureRequest dto) throws IOException {
         MultipartFile file = dto.getFile();
-        Account account = accountRepository.findById(id);
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new RuntimeException("Account not found"));
 
         try {
             account.setProfilePic(file.getBytes());
@@ -85,8 +89,9 @@ public class AccountServiceImplementation implements AccountService {
     fetches the profile picture of an account. returns a response entity containing it converted to 64byte string.
      */
     @Override
-    public ProfilePictureResponse getProfilePicture(int id){
-        Account account = accountRepository.findById(id);
+    public ProfilePictureResponse getProfilePicture(String username){
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new RuntimeException("Account not found"));
         return new ProfilePictureResponse(account);
     }
 
@@ -97,7 +102,7 @@ public class AccountServiceImplementation implements AccountService {
     public Account createNewAccount(CreateAccountRequest dto){
         Account account = new Account();
         account.setUsername(dto.getUsername());
-        account.setPassword(dto.getPassword());
+        account.setPassword(passwordEncoder.encode(dto.getPassword()));
         return accountRepository.save(account);
     }
 
@@ -113,15 +118,20 @@ public class AccountServiceImplementation implements AccountService {
     /*
     add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out
     */
-    public void updatePassword(int id, UpdatePasswordRequest dto){
-        Account account = accountRepository.findById(id);
+    public void updatePassword(String username, UpdatePasswordRequest dto){
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new RuntimeException("Account not found"));
+
         confirmNewPassword(dto.getNewPassword(), dto.getConfirmPassword());
-        if(!dto.getOldPassword().equals(account.getPassword())){
+
+        if (!passwordEncoder.matches(dto.getOldPassword(), account.getPassword())) {
             throw new RuntimeException("Current password is incorrect");
         }
-        account.setPassword(dto.getNewPassword());
-        accountRepository.save(account);
 
+        String encodedNewPassword = passwordEncoder.encode(dto.getNewPassword());
+        account.setPassword(encodedNewPassword);
+
+        accountRepository.save(account);
     }
 
     /*
@@ -160,54 +170,52 @@ public class AccountServiceImplementation implements AccountService {
      */
     @Override
     public SignInResponse login(String username, String password) {
-        Optional<Account> acc = findByUsername(username);
-
-        Account account = acc.orElseThrow(()->
-            new IllegalArgumentException("Username not found"));
-
-        // bad form, still need an encoder
-        if (!Objects.equals(password, account.getPassword())){
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        if (!passwordEncoder.matches(password, account.getPassword())) {
             throw new IllegalArgumentException("Invalid Password");
         }
-
         return new SignInResponse(account.getId(), account.getUsername());
     }
 
     /**
-     * Takes in an account id and returns the wantToRead list associated with the account
-     * @param accountId
+     * Takes in a username and returns the wantToRead list associated with the account
+     * @param username
      * @return
      */
     @Transactional
     @Override
-    public List<Book> getWantToRead(int accountId) {
-        Account account = accountRepository.findById(accountId);
+    public List<Book> getWantToRead(String username) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         System.out.println(account.getWantToRead());
         return account.getWantToRead();
     }
 
     /**
      * Takes in an account id and a book and adds the book to the wantToRead list associated with the account
-     * @param accountId
+     * @param username
      * @param book
      */
     @Transactional
     @Override
-    public void addBookToWantToRead(int accountId, Book book) {
-        Account account = accountRepository.findById(accountId);
+    public void addBookToWantToRead(String username, Book book) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         account.getWantToRead().add(book);
         accountRepository.save(account);
     }
 
     /**
-     * Takes in an account id and a book id and removes the book from the wantToRead list associated with the account
-     * @param accountId
+     * Takes in a username and a book id and removes the book from the wantToRead list associated with the account
+     * @param username
      * @param bookId
      */
     @Transactional
     @Override
-    public void removeBookFromWantToRead(int accountId, int bookId) {
-        Account account = accountRepository.findById(accountId);
+    public void removeBookFromWantToRead(String username, int bookId) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         for(Book book : account.getWantToRead()) {
             if(book.getId() == bookId) {
                 account.getWantToRead().remove(book);
@@ -219,39 +227,42 @@ public class AccountServiceImplementation implements AccountService {
 
     /**
      * Takes in an account id and returns the haveRead list associated with the account
-     * @param accountId
+     * @param username
      * @return
      */
     @Transactional
     @Override
-    public List<Book> getHaveRead(int accountId) {
-        Account account = accountRepository.findById(accountId);
+    public List<Book> getHaveRead(String username) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         System.out.println(account.getHaveRead());
         return account.getHaveRead();
     }
 
     /**
      * Takes in an account id and a book and adds the book to the haveRead list associated with the account
-     * @param accountId
+     * @param username
      * @param book
      */
     @Transactional
     @Override
-    public void addBookToHaveRead(int accountId, Book book) {
-        Account account = accountRepository.findById(accountId);
+    public void addBookToHaveRead(String username, Book book) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         account.getHaveRead().add(book);
         accountRepository.save(account);
     }
 
     /**
      * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
-     * @param accountId
+     * @param username
      * @param bookId
      */
     @Transactional
     @Override
-    public void removeBookFromHaveRead(int accountId, int bookId) {
-        Account account = accountRepository.findById(accountId);
+    public void removeBookFromHaveRead(String username, int bookId) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         for(Book book : account.getHaveRead()) {
             if(book.getId() == bookId) {
                 account.getHaveRead().remove(book);
@@ -263,39 +274,42 @@ public class AccountServiceImplementation implements AccountService {
 
     /**
      * Takes in an account id and returns the amReading list associated with the account
-     * @param accountId
+     * @param username
      * @return
      */
     @Transactional
     @Override
-    public List<Book> getAmReading(int accountId) {
-        Account account = accountRepository.findById(accountId);
+    public List<Book> getAmReading(String username) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         System.out.println(account.getAmReading());
         return account.getAmReading();
     }
 
     /**
      * Takes in an account id and a book and adds the book to the amReading list associated with the account
-     * @param accountId
+     * @param username
      * @param book
      */
     @Transactional
     @Override
-    public void addBookToAmReading(int accountId, Book book) {
-        Account account = accountRepository.findById(accountId);
+    public void addBookToAmReading(String username, Book book) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         account.getAmReading().add(book);
         accountRepository.save(account);
     }
 
     /**
      * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
-     * @param accountId
+     * @param username
      * @param bookId
      */
     @Transactional
     @Override
-    public void removeBookFromAmReading(int accountId, int bookId) {
-        Account account = accountRepository.findById(accountId);
+    public void removeBookFromAmReading(String username, int bookId) {
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
         for(Book book : account.getAmReading()) {
             if(book.getId() == bookId) {
                 account.getAmReading().remove(book);
