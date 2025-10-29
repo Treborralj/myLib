@@ -21,8 +21,8 @@ public class Account {
     private String password;
     private String bio;
 
-    @Lob
-    @Column(columnDefinition = "BYTEA")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_pic")
     private byte[] profilePic;
 
     @ManyToMany

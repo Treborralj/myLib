@@ -27,29 +27,29 @@ import java.util.Optional;
 public interface AccountService {
     Account save(Account account);
     void delete(Account account);
-    UpdateAccountResponse updateAccount(int id, UpdateAccountRequest dto);
+    UpdateAccountResponse updateAccount(String username, UpdateAccountRequest dto);
 
-    ProfilePictureResponse updateProfilePicture(int id, ProfilePictureRequest dto) throws IOException;
+    ProfilePictureResponse updateProfilePicture(String username, ProfilePictureRequest dto) throws IOException;
 
-    ProfilePictureResponse getProfilePicture(int id);
+    ProfilePictureResponse getProfilePicture(String username);
 
     Account createNewAccount(CreateAccountRequest dto);
 
     boolean existsByUsername(String username);
 
-    void updatePassword(int id, UpdatePasswordRequest dto);
+    void updatePassword(String username, UpdatePasswordRequest dto);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
     List<Account> discoverAccountByUsername(String partialUsername);
     SignInResponse login(String username, String password);
 
-    void addBookToWantToRead(int accountId, Book book);
-    void addBookToHaveRead(int accountId, Book book);
-    void addBookToAmReading(int accountId, Book book);
-    List<Book> getWantToRead(int accountId);
-    List<Book> getHaveRead(int accountId);
-    List<Book> getAmReading(int accountId);
-    void removeBookFromHaveRead(int accountId, int bookId);
-    void removeBookFromWantToRead(int accountId, int bookId);
-    void removeBookFromAmReading(int accountId, int bookId);
+    void addBookToWantToRead(String username, Book book);
+    void addBookToHaveRead(String username, Book book);
+    void addBookToAmReading(String username, Book book);
+    List<Book> getWantToRead(String username);
+    List<Book> getHaveRead(String username);
+    List<Book> getAmReading(String username);
+    void removeBookFromHaveRead(String username, int bookId);
+    void removeBookFromWantToRead(String username, int bookId);
+    void removeBookFromAmReading(String username, int bookId);
 }
