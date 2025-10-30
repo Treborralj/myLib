@@ -1,44 +1,30 @@
-package is.hi.hbv501g.mylib.Persistence.Entities;
+package is.hi.hbv501g.mylib.dto.Responses;
 
-import jakarta.persistence.*;
+import is.hi.hbv501g.mylib.Persistence.Entities.Account;
+import is.hi.hbv501g.mylib.Persistence.Entities.Book;
+import is.hi.hbv501g.mylib.Persistence.Entities.Comment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/******************************************************************************
- * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
- *
- *****************************************************************************/
-@Entity
-@Table(name = "reviews")
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ReviewResponse {
     private int id;
     private String text;
-    @ManyToOne
-    @JoinColumn(name="account_id")
     private Account account;
-    @ManyToOne
-    @JoinColumn(name="book_id")
     private Book book;
     private LocalDateTime time;
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
     private double score;
 
-    public Review( String text, Account account, Book book, LocalDateTime time, double score) {
+    public ReviewResponse(int id, String text, Account account, Book book, LocalDateTime time, List<Comment> comments, double score) {
+        this.id = id;
         this.text = text;
         this.account = account;
         this.book = book;
         this.time = time;
+        this.comments = comments;
         this.score = score;
-    }
-
-    public Review() {
     }
 
     public int getId() {
@@ -65,9 +51,13 @@ public class Review {
         this.account = account;
     }
 
-    public Book getBook() { return book; }
+    public Book getBook() {
+        return book;
+    }
 
-    public void setBook(Book book) { this.book = book; }
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
     public LocalDateTime getTime() {
         return time;
@@ -92,4 +82,5 @@ public class Review {
     public void setScore(double score) {
         this.score = score;
     }
+
 }

@@ -66,6 +66,7 @@ public class AccountController {
     A login method. the Signin requests requires a username and password. if the username exists, the password is
     compared. if everything is a match, the response is returned
      */
+    /**
     @PostMapping("/login")
     public ResponseEntity<?> loginPost(@RequestBody SignInRequest dto, HttpSession session){
         SignInResponse response = accountService.login(dto.getUsername(), dto.getPassword());
@@ -74,19 +75,21 @@ public class AccountController {
 
         return ResponseEntity.ok(response);
     }
-
+    */
     /*
     this method invalidates all session info and logs the user out
      */
+    /**
     @GetMapping("/logout")
     public String logoutGet(HttpSession session){
         session.invalidate();
         return "You have been logged out";
     }
-
+    */
      /*
      this method takes in the httpSession token and checks if a user is logged in or not
       */
+    /**
     @GetMapping("/loggedin")
     public String loggedinGet(HttpSession session){
         Integer accountId = (Integer) session.getAttribute("LoggedInAccountId");
@@ -95,6 +98,7 @@ public class AccountController {
         }
         return "You are not logged in";
     }
+    */
     /*
     This method takes an accounts id and an update request for said account. this cannot change passwords, see
     UpdatePassword() due to different handling. After updating account in repository a response is returned

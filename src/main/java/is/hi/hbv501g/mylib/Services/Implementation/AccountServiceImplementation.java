@@ -151,6 +151,8 @@ public class AccountServiceImplementation implements AccountService {
         return accountRepository.findByUsername(username);
     }
     @Override
+    public Account findById(int id) { return accountRepository.findById(id); }
+    @Override
     public List<Account> discoverAccountByUsername(String partialUsername){
         return accountRepository.findByUsernameContainingIgnoreCase(partialUsername);
     }

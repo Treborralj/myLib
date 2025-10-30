@@ -13,10 +13,10 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     void deleteById(int id);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
+    Account findById(int id);
     List<Account> findByUsernameContainingIgnoreCase(String fragment);
 
     //Account findByUsername(String username);
-    Account findById(int id);
     static boolean existsByUsername(String username) {
         return false;
     }
