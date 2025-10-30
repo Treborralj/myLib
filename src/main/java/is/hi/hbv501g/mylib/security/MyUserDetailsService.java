@@ -26,7 +26,7 @@ public class MyUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found:" + username));
         return org.springframework.security.core.userdetails.User
                 .withUsername(account.getUsername())
-                .password(account.getPassword())   // must be the ENCODED (BCrypt) password
+                .password(account.getPassword())
                 .authorities("USER")
                 .build();
     }

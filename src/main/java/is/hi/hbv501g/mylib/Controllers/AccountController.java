@@ -48,6 +48,13 @@ public class AccountController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @GetMapping("/discoverUser/{username}")
+    public List<DiscoverUsersByUsernameRequest> discoverUser(@PathVariable String username) {
+        return accountService.discoverAccountByUsername(username)
+                .stream()
+                .map(a -> new DiscoverUsersByUsernameRequest(a.getId(), a.getUsername(), a.getBio()))
+                .toList();
+    }
 
     /*
     This method takes an accounts id and an update request for said account. this cannot change passwords, see
@@ -175,11 +182,8 @@ public class AccountController {
     /**
      * Returns a list of accounts matching the given string. If no account is found and empty list
      * is returned.
-     * @param accountUsername
+     * @param username
      * @return a list of accounts matching the given string.
      */
-    @GetMapping("/searchUser")
-    public List<Account> discoverUserByUsername(@RequestParam String accountUsername){
-        return accountService.discoverAccountByUsername(accountUsername);
-    }
+
 }
