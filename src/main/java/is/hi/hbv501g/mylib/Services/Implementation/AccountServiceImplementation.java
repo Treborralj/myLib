@@ -161,8 +161,8 @@ public class AccountServiceImplementation implements AccountService {
         return accountRepository.findByUsername(username);
     }
     @Override
-    public List<Account> discoverAccountByUsername(String partialUsername){
-        return accountRepository.findByUsernameContainingIgnoreCase(partialUsername);
+    public List<Account> discoverAccountByUsername(String username){
+        return accountRepository.findByUsernameContainingIgnoreCase(username);
     }
     /*
     takes in a username and password and check if they match with the repository. if they do, it returns a response.
