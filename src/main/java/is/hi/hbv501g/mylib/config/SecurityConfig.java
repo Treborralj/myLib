@@ -4,6 +4,7 @@ import is.hi.hbv501g.mylib.security.JwtAuthFilter;
 import is.hi.hbv501g.mylib.security.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,15 +30,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+                .csrf(csrf -> csrf.disable())
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/account/signup","/books/**","/**",
-                                "/account/searchUser").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/account/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/account/discoverUser/{username}", "/books/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .userDetailsService(uds)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
