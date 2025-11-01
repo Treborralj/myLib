@@ -11,19 +11,13 @@ import java.util.List;
 public class ReviewResponse {
     private int id;
     private String text;
-    private Account account;
-    private Book book;
     private LocalDateTime time;
-    private List<Comment> comments = new ArrayList<>();
     private double score;
 
-    public ReviewResponse(int id, String text, Account account, Book book, LocalDateTime time, List<Comment> comments, double score) {
+    public ReviewResponse(int id, String text, LocalDateTime time, double score) {
         this.id = id;
         this.text = text;
-        this.account = account;
-        this.book = book;
         this.time = time;
-        this.comments = comments;
         this.score = score;
     }
 
@@ -43,36 +37,12 @@ public class ReviewResponse {
         this.text = text;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
     public LocalDateTime getTime() {
         return time;
     }
 
     public void setTime(LocalDateTime time) {
         this.time = time;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     public double getScore() {

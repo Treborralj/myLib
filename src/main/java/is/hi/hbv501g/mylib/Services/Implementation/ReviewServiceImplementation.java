@@ -10,6 +10,7 @@ import is.hi.hbv501g.mylib.Services.ReviewService;
 import is.hi.hbv501g.mylib.dto.Requests.CreateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
+import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -38,10 +39,7 @@ public class ReviewServiceImplementation implements ReviewService {
         return new ReviewResponse(
                 r.getId(),
                 r.getText(),
-                r.getAccount(),
-                r.getBook(),
                 r.getTime(),
-                java.util.List.of(),
                 r.getScore()
         );
     }
@@ -57,17 +55,21 @@ public class ReviewServiceImplementation implements ReviewService {
     }
 
     @Override
-    public void deleteReview(int id) {
-        if (!reviewRepository.existsById(id)) {
-            throw new NoSuchElementException("Review not found with id: " + id);
+    public void deleteReview(UserDetails me, int id) {
+        Review review = reviewRepository.findReviewById(id);
+        if(!review.getAccount().getUsername().equals(me.getUsername())) {
+            throw new RuntimeException("Users can only delete their own reviews");
         }
         reviewRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public ReviewResponse updateReview(UpdateReviewRequest dto) {
+    public ReviewResponse updateReview(UserDetails me, UpdateReviewRequest dto) {
         Review review = reviewRepository.findReviewById(dto.getReviewId());
+        if(!review.getAccount().getUsername().equals(me.getUsername())) {
+            throw new RuntimeException("Users can only edit their own reviews");
+        }
         if(dto.getText() != null) {review.setText(dto.getText());}
         review.setScore(dto.getScore());
         review.setComments(review.getComments());
@@ -77,22 +79,32 @@ public class ReviewServiceImplementation implements ReviewService {
 
     @Override
     @Transactional
-    public List<Review> getAccountReviews(int id) {
-        Account account = accountRepository.findById(id);
-        return account.getReviews();
+    public List<ReviewResponse> getAccountReviews(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getReviews()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
     @Transactional
-    public List<Review> getBookReviews(int id) {
+    public List<ReviewResponse> getBookReviews(int id) {
         Book book = bookRepository.findBookById(id);
-        return book.getReviews();
+
+        return book.getReviews()
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override
     @Transactional
-    public Account fetchAccount(int reviewId) {
+    public UpdateAccountResponse fetchAccount(int reviewId) {
         Review review = reviewRepository.findReviewById(reviewId);
-        return review.getAccount();
+        Account acc = review.getAccount();
+        return new UpdateAccountResponse(acc.getId(),acc.getUsername(),acc.getBio());
     }
 }

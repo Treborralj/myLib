@@ -39,27 +39,29 @@ public class ReviewController {
     }
 
     @DeleteMapping("/remove/{id}")
-    public void deleteReview(@PathVariable int id) {
-        reviewService.deleteReview(id);
+    public void deleteReview(@AuthenticationPrincipal UserDetails me, @PathVariable int id) {
+        reviewService.deleteReview(me, id);
     }
 
     @PatchMapping("/edit")
-    public ReviewResponse updateReview(@RequestBody UpdateReviewRequest dto){
-        return reviewService.updateReview(dto);
+    public ReviewResponse updateReview(@AuthenticationPrincipal UserDetails me, @RequestBody UpdateReviewRequest dto){
+        return reviewService.updateReview(me, dto);
     }
 
-    @GetMapping("/account/{id}")
-    public List<Review> getAccountReviews(@PathVariable int id) {
-        return reviewService.getAccountReviews(id);
+    @GetMapping("/account/{username}")
+    public List<ReviewResponse> getAccountReviews(@PathVariable String username) {
+        return reviewService.getAccountReviews(username);
     }
 
     @GetMapping("/book/{id}")
-    public List<Review> getBookReviews(@PathVariable int id) {
+    public List<ReviewResponse> getBookReviews(@PathVariable int id) {
         return reviewService.getBookReviews(id);
     }
 
     @GetMapping("/fetchAccount/{reviewId}")
-    public Account fetchAccount(@PathVariable int reviewId) {
+    // nota UpdateAccountResponse í bili, hægt að búa til sérstakt response seinna ef
+    // við viljum fyrir tilfellið þegar notandi er sóttur sem er ekki endilega maður sjálfur
+    public UpdateAccountResponse fetchAccount(@PathVariable int reviewId) {
         return reviewService.fetchAccount(reviewId);
     }
 }
