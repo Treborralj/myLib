@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/account/signup").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/account/discoverUser/{username}", "/books/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/account/discoverUser/{username}", "/books/**", "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
