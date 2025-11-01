@@ -6,6 +6,7 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Review;
 import is.hi.hbv501g.mylib.dto.Requests.CreateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  *
  *****************************************************************************/
 public interface ReviewService {
-    public ReviewResponse addReview(CreateReviewRequest request);
+    public ReviewResponse addReview(UserDetails me, CreateReviewRequest request);
     public void deleteReview(int id);
     public ReviewResponse updateReview(UpdateReviewRequest dto);
     public List<Review> getAccountReviews(int id);

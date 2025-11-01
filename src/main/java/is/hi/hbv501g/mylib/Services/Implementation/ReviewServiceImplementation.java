@@ -11,12 +11,14 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 @Service
@@ -45,9 +47,10 @@ public class ReviewServiceImplementation implements ReviewService {
     }
 
     @Override
-    public ReviewResponse addReview(CreateReviewRequest request) {
+    public ReviewResponse addReview(UserDetails me, CreateReviewRequest request) {
         Book book = bookRepository.findBookById(request.getBookId());
-        Account account = accountRepository.findById(request.getAccountId());
+        Account account = accountRepository.findByUsername(me.getUsername()).
+                orElseThrow(() -> new RuntimeException("Account not found"));
         LocalDateTime time = LocalDateTime.now();
         Review review = reviewRepository.save(new Review(request.getText(), account, book, time, request.getScore()));
         return toDto(review);

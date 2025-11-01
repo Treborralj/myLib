@@ -15,6 +15,8 @@ import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -32,8 +34,8 @@ public class ReviewController {
     }
 
     @PostMapping("/add")
-    public ReviewResponse addReview(@RequestBody CreateReviewRequest body) {
-        return reviewService.addReview(body);
+    public ReviewResponse addReview(@AuthenticationPrincipal UserDetails me, @RequestBody CreateReviewRequest body) {
+        return reviewService.addReview(me, body);
     }
 
     @DeleteMapping("/remove/{id}")

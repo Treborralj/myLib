@@ -10,7 +10,6 @@ import java.util.List;
 
 public class CreateReviewRequest {
     private String text;
-    private int accountId;
     private int bookId;
     private double score;
 
@@ -20,14 +19,6 @@ public class CreateReviewRequest {
 
     public void setText(String text) {
         this.text = text;
-    }
-
-    public int getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
     }
 
     public int getBookId() {
