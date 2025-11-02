@@ -160,30 +160,71 @@ public class AccountController {
         accountService.removeBookFromAmReading(me.getUsername(), bookId);
     }
 
-    /*
-    This method takes in an id and request info for changing profile picture. if this fails an error is thrown. a
-    response is returned once finished
+    /**
+     * Updates the Profile Picture of currently logged-in user
+     * @param me the currently logged-in users credentials
+     * @return a data transfer object containing the image in a 64bit String representation and
      */
-    @PatchMapping("/updatePic")
-    public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, ProfilePictureRequest dto) throws IOException {
+    @PatchMapping("/updateProfilePicture")
+    public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @RequestBody ProfilePictureRequest dto) throws IOException {
         ProfilePictureResponse response = accountService.updateProfilePicture(me.getUsername(), dto);
         return ResponseEntity.ok(response);
     }
 
-    /*
-    this method fetches a profile picture from an account and returns in a response entity
+    /**
+     * Fetches the Profile picture of a user
+     * @param me the currently logged-in users credentials
+     * @return a data transfer object containing the image in a 64bit String representation
      */
-    @GetMapping("/myProfilePicture")
+    @GetMapping("/getProfilePicture")
     public ResponseEntity<?> getProfilePicture(@AuthenticationPrincipal UserDetails me) {
         ProfilePictureResponse response = accountService.getProfilePicture(me.getUsername());
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Returns a list of accounts matching the given string. If no account is found and empty list
-     * is returned.
-     * @param username
-     * @return a list of accounts matching the given string.
+     * Creates a follow relation between the current user and a different account.
+     * @param me the currently logged-in users credentials
+     * @param dto a data transfer object containing a username
+     * @return a confirmation a relation is created
      */
+    @PostMapping("/followAccount")
+    public ResponseEntity<?> follow(@AuthenticationPrincipal UserDetails me, @RequestBody FollowRequest dto){
+        accountService.followUser(me.getUsername(), dto.getUsername());
+        return ResponseEntity.ok("User is now following " + dto.getUsername());
+    }
 
+    /**
+     * Removes a follow relation between the current user and a different account.
+     * @param me the currently logged-in users credentials
+     * @param dto a data transfer object containing a username
+     * @return a confirmation a relation is removed
+     */
+    @PostMapping("/unfollowAccount")
+    public ResponseEntity<?> unfollow(@AuthenticationPrincipal UserDetails me, @RequestBody FollowRequest dto){
+        accountService.unfollowUser(me.getUsername(), dto.getUsername());
+        return ResponseEntity.ok("User is no longer following " + dto.getUsername());
+
+    }
+    /**
+     * Gets the names of all accounts a user is currently following
+     * @param dto a data transfer object containing a username
+     * @return A list of usernames that are followed
+     */
+    @GetMapping("/getFollowing")
+    public ResponseEntity<?> getFollowing(@RequestBody FollowRequest dto){
+        List<FollowResponse> response = accountService.getFollowing(dto.getUsername());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Gets the names of all accounts currently following a user
+     * @param dto a data transfer object containing a username
+     * @return A list of usernames that are following
+     */
+    @GetMapping("/getFollowers")
+    public ResponseEntity<?> getFollowers(@RequestBody FollowRequest dto){
+        List<FollowResponse> response = accountService.getFollowers(dto.getUsername());
+        return ResponseEntity.ok(response);
+    }
 }

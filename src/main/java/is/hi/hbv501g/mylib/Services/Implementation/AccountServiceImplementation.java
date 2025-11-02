@@ -8,6 +8,7 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
@@ -160,6 +161,12 @@ public class AccountServiceImplementation implements AccountService {
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
+
+    @Override
+    public Account findById(int id) {
+        return null;
+    }
+
     @Override
     public List<Account> discoverAccountByUsername(String username){
         return accountRepository.findByUsernameContainingIgnoreCase(username);
@@ -317,5 +324,50 @@ public class AccountServiceImplementation implements AccountService {
             }
         }
         accountRepository.save(account);
+    }
+
+    @Transactional
+    @Override
+    public void followUser(String followerName, String followingName){
+        if (Objects.equals(followerName, followingName)){
+            throw new IllegalArgumentException( "no following yourself allowed");
+        }
+        Account follower = accountRepository.findByUsername(followerName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        Account following = accountRepository.findByUsername(followingName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        follower.getFollowing().add(following);
+        accountRepository.save(follower);
+    }
+    @Transactional
+    @Override
+    public void unfollowUser(String followerName, String followingName){
+        if (Objects.equals(followerName, followingName)){
+            throw new IllegalArgumentException( "unfollowing yourself not allowed, how'd you do it anyways?");
+        }
+        Account follower = accountRepository.findByUsername(followerName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        Account following = accountRepository.findByUsername(followingName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        follower.getFollowing().remove(following);
+        accountRepository.save(follower);
+    }
+
+    @Override
+    public List<FollowResponse> getFollowers(String username){
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getFollowers().stream()
+                .map(f -> new FollowResponse(f.getUsername())).toList();
+    }
+
+    @Override
+    public List<FollowResponse> getFollowing(String username){
+        Account account = accountRepository.findByUsername(username).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getFollowing().stream()
+                .map(f -> new FollowResponse(f.getUsername())).toList();
     }
 }
