@@ -3,11 +3,13 @@ package is.hi.hbv501g.mylib.Services;
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
+import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
@@ -53,4 +55,14 @@ public interface AccountService {
     void removeBookFromHaveRead(String username, int bookId);
     void removeBookFromWantToRead(String username, int bookId);
     void removeBookFromAmReading(String username, int bookId);
+
+    @Transactional
+    void followUser(String followerName, String followingName);
+
+    @Transactional
+    void unfollowUser(String followerName, String followingName);
+
+    List<FollowResponse> getFollowers(String username);
+
+    List<FollowResponse> getFollowing(String username);
 }

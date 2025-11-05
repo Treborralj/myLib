@@ -160,30 +160,72 @@ public class AccountController {
         accountService.removeBookFromAmReading(me.getUsername(), bookId);
     }
 
-    /*
-    This method takes in an id and request info for changing profile picture. if this fails an error is thrown. a
-    response is returned once finished
+    /**
+     * Updates the Profile Picture of currently logged-in user
+     * @param me the currently logged-in users credentials
+     * @param dto a data transfer object containing the multipartfile for an image
+     * @return a data transfer object containing the image in a 64bit String representation and account id
      */
-    @PatchMapping("/updatePic")
-    public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, ProfilePictureRequest dto) throws IOException {
+    @PatchMapping("/updateProfilePicture")
+    public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @RequestBody ProfilePictureRequest dto) throws IOException {
         ProfilePictureResponse response = accountService.updateProfilePicture(me.getUsername(), dto);
         return ResponseEntity.ok(response);
     }
 
-    /*
-    this method fetches a profile picture from an account and returns in a response entity
+    /**
+     * Fetches the Profile picture of a user
+     * @param username the account to fetch the profile picture of
+     * @return a data transfer object containing the image in a 64bit String representation and account id
      */
-    @GetMapping("/myProfilePicture")
-    public ResponseEntity<?> getProfilePicture(@AuthenticationPrincipal UserDetails me) {
-        ProfilePictureResponse response = accountService.getProfilePicture(me.getUsername());
+    @GetMapping("/getProfilePicture/{username}")
+    public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
+        ProfilePictureResponse response = accountService.getProfilePicture(username);
         return ResponseEntity.ok(response);
     }
 
     /**
-     * Returns a list of accounts matching the given string. If no account is found and empty list
-     * is returned.
-     * @param username
-     * @return a list of accounts matching the given string.
+     * Creates a follow relation between the current user and a different account.
+     * @param me the currently logged-in users credentials
+     * @param dto a data transfer object containing a username
+     * @return a confirmation a relation is created
      */
+    @PostMapping("/followAccount")
+    public ResponseEntity<?> follow(@AuthenticationPrincipal UserDetails me, @RequestBody FollowRequest dto){
+        accountService.followUser(me.getUsername(), dto.getUsername());
+        return ResponseEntity.ok("User is now following " + dto.getUsername());
+    }
 
+    /**
+     * Removes a follow relation between the current user and a different account.
+     * @param me the currently logged-in users credentials
+     * @param dto a data transfer object containing a username
+     * @return a confirmation a relation is removed
+     */
+    @PostMapping("/unfollowAccount")
+    public ResponseEntity<?> unfollow(@AuthenticationPrincipal UserDetails me, @RequestBody FollowRequest dto){
+        accountService.unfollowUser(me.getUsername(), dto.getUsername());
+        return ResponseEntity.ok("User is no longer following " + dto.getUsername());
+
+    }
+    /**
+     * Gets the names of all accounts a user is currently following
+     * @param username the username of an account
+     * @return A list of usernames that are followed
+     */
+    @GetMapping("/getFollowing/{username}")
+    public ResponseEntity<?> getFollowing(@PathVariable String username){
+        List<FollowResponse> response = accountService.getFollowers(username);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Gets the names of all accounts currently following a user
+     * @param username the username of an account
+     * @return A list of usernames that are following
+     */
+    @GetMapping("/getFollowers/{username}")
+    public ResponseEntity<?> getFollowers(@PathVariable String username){
+        List<FollowResponse> response = accountService.getFollowers(username);
+        return ResponseEntity.ok(response);
+    }
 }
