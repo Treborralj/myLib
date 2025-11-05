@@ -354,22 +354,19 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(follower);
     }
 
-    @Transactional
-    @Override
-    public List<FollowResponse> getFollowers(String username){
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-
-        return account.getFollowers().stream()
-                .map(f -> new FollowResponse(f.getUsername())).toList();
-    }
-    @Transactional
-    @Override
+    @Transactional(readOnly = true)
     public List<FollowResponse> getFollowing(String username){
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        List<Account> following = accountRepository.findFollowingOf(username);
+        return following.stream()
+                .map(a -> new FollowResponse(a.getUsername()))
+                .toList();
+    }
 
-        return account.getFollowing().stream()
-                .map(f -> new FollowResponse(f.getUsername())).toList();
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getFollowers(String username){
+        List<Account> followers = accountRepository.findFollowersOf(username);
+        return followers.stream()
+                .map(a -> new FollowResponse(a.getUsername()))
+                .toList();
     }
 }
