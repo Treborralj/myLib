@@ -65,4 +65,6 @@ public interface AccountService {
     List<FollowResponse> getFollowers(String username);
 
     List<FollowResponse> getFollowing(String username);
+
+    void deleteAccount(String username, String password);
 }

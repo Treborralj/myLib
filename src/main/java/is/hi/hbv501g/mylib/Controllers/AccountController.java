@@ -209,21 +209,32 @@ public class AccountController {
     }
     /**
      * Gets the names of all accounts a user is currently following
-     * @param username the username of an account
+     * @param me the username of an account
      * @return A list of usernames that are followed
      */
-    @GetMapping("/getFollowing/{username}")
-    public ResponseEntity<List<FollowResponse>> getFollowing(@PathVariable String username){
-        return ResponseEntity.ok(accountService.getFollowing(username));
+    @GetMapping("/getFollowing")
+    public ResponseEntity<List<FollowResponse>> getFollowing(@AuthenticationPrincipal UserDetails me){
+        return ResponseEntity.ok(accountService.getFollowing(me.getUsername()));
     }
 
     /**
      * Gets the names of all accounts currently following a user
-     * @param username the username of an account
+     * @param me the username of an account
      * @return A list of usernames that are following
      */
-    @GetMapping("/getFollowers/{username}")
-    public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable String username){
-        return ResponseEntity.ok(accountService.getFollowers(username));
+    @GetMapping("/getFollowers")
+    public ResponseEntity<List<FollowResponse>> getFollowers(@AuthenticationPrincipal UserDetails me){
+        return ResponseEntity.ok(accountService.getFollowers(me.getUsername()));
+    }
+
+    /**
+     * Method that takes in a users password and deletes the users account
+     * @param me
+     * @param password
+     */
+    @DeleteMapping("/deleteAccount")
+    public void deleteAccount(@AuthenticationPrincipal UserDetails me, @RequestBody DeleteAccountRequest password){
+        accountService.deleteAccount(me.getUsername(), password.getPassword());
+
     }
 }
