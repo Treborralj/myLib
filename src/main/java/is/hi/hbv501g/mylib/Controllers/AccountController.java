@@ -213,9 +213,8 @@ public class AccountController {
      * @return A list of usernames that are followed
      */
     @GetMapping("/getFollowing/{username}")
-    public ResponseEntity<?> getFollowing(@PathVariable String username){
-        List<FollowResponse> response = accountService.getFollowers(username);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<FollowResponse>> getFollowing(@PathVariable String username){
+        return ResponseEntity.ok(accountService.getFollowing(username));
     }
 
     /**
@@ -224,8 +223,7 @@ public class AccountController {
      * @return A list of usernames that are following
      */
     @GetMapping("/getFollowers/{username}")
-    public ResponseEntity<?> getFollowers(@PathVariable String username){
-        List<FollowResponse> response = accountService.getFollowers(username);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable String username){
+        return ResponseEntity.ok(accountService.getFollowers(username));
     }
 }
