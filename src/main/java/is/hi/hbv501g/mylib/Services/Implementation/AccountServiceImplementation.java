@@ -87,6 +87,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /*
+
     fetches the profile picture of an account. returns a response entity containing it converted to 64byte string.
      */
     @Override
@@ -353,6 +354,7 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(follower);
     }
 
+    @Transactional
     @Override
     public List<FollowResponse> getFollowers(String username){
         Account account = accountRepository.findByUsername(username).
@@ -361,7 +363,7 @@ public class AccountServiceImplementation implements AccountService {
         return account.getFollowers().stream()
                 .map(f -> new FollowResponse(f.getUsername())).toList();
     }
-
+    @Transactional
     @Override
     public List<FollowResponse> getFollowing(String username){
         Account account = accountRepository.findByUsername(username).

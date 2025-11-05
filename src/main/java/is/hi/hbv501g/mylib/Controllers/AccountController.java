@@ -163,7 +163,8 @@ public class AccountController {
     /**
      * Updates the Profile Picture of currently logged-in user
      * @param me the currently logged-in users credentials
-     * @return a data transfer object containing the image in a 64bit String representation and
+     * @param dto a data transfer object containing the multipartfile for an image
+     * @return a data transfer object containing the image in a 64bit String representation and account id
      */
     @PatchMapping("/updateProfilePicture")
     public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @RequestBody ProfilePictureRequest dto) throws IOException {
@@ -173,12 +174,12 @@ public class AccountController {
 
     /**
      * Fetches the Profile picture of a user
-     * @param me the currently logged-in users credentials
-     * @return a data transfer object containing the image in a 64bit String representation
+     * @param username the account to fetch the profile picture of
+     * @return a data transfer object containing the image in a 64bit String representation and account id
      */
-    @GetMapping("/getProfilePicture")
-    public ResponseEntity<?> getProfilePicture(@AuthenticationPrincipal UserDetails me) {
-        ProfilePictureResponse response = accountService.getProfilePicture(me.getUsername());
+    @GetMapping("/getProfilePicture/{username}")
+    public ResponseEntity<?> getProfilePicture(@PathVariable String username) {
+        ProfilePictureResponse response = accountService.getProfilePicture(username);
         return ResponseEntity.ok(response);
     }
 
@@ -208,23 +209,23 @@ public class AccountController {
     }
     /**
      * Gets the names of all accounts a user is currently following
-     * @param dto a data transfer object containing a username
+     * @param username the username of an account
      * @return A list of usernames that are followed
      */
-    @GetMapping("/getFollowing")
-    public ResponseEntity<?> getFollowing(@RequestBody FollowRequest dto){
-        List<FollowResponse> response = accountService.getFollowing(dto.getUsername());
+    @GetMapping("/getFollowing/{username}")
+    public ResponseEntity<?> getFollowing(@PathVariable String username){
+        List<FollowResponse> response = accountService.getFollowers(username);
         return ResponseEntity.ok(response);
     }
 
     /**
      * Gets the names of all accounts currently following a user
-     * @param dto a data transfer object containing a username
+     * @param username the username of an account
      * @return A list of usernames that are following
      */
-    @GetMapping("/getFollowers")
-    public ResponseEntity<?> getFollowers(@RequestBody FollowRequest dto){
-        List<FollowResponse> response = accountService.getFollowers(dto.getUsername());
+    @GetMapping("/getFollowers/{username}")
+    public ResponseEntity<?> getFollowers(@PathVariable String username){
+        List<FollowResponse> response = accountService.getFollowers(username);
         return ResponseEntity.ok(response);
     }
 }
