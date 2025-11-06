@@ -8,14 +8,17 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
@@ -86,6 +89,7 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /*
+
     fetches the profile picture of an account. returns a response entity containing it converted to 64byte string.
      */
     @Override
@@ -160,6 +164,12 @@ public class AccountServiceImplementation implements AccountService {
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
+
+    @Override
+    public Account findById(int id) {
+        return null;
+    }
+
     @Override
     public List<Account> discoverAccountByUsername(String username){
         return accountRepository.findByUsernameContainingIgnoreCase(username);
@@ -317,5 +327,58 @@ public class AccountServiceImplementation implements AccountService {
             }
         }
         accountRepository.save(account);
+    }
+
+    @Transactional
+    @Override
+    public void followUser(String followerName, String followingName){
+        if (Objects.equals(followerName, followingName)){
+            throw new IllegalArgumentException( "no following yourself allowed");
+        }
+        Account follower = accountRepository.findByUsername(followerName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        Account following = accountRepository.findByUsername(followingName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        follower.getFollowing().add(following);
+        accountRepository.save(follower);
+    }
+    @Transactional
+    @Override
+    public void unfollowUser(String followerName, String followingName){
+        if (Objects.equals(followerName, followingName)){
+            throw new IllegalArgumentException( "unfollowing yourself not allowed, how'd you do it anyways?");
+        }
+        Account follower = accountRepository.findByUsername(followerName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        Account following = accountRepository.findByUsername(followingName).
+                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+        follower.getFollowing().remove(following);
+        accountRepository.save(follower);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getFollowing(String username){
+        List<Account> following = accountRepository.findFollowingOf(username);
+        return following.stream()
+                .map(a -> new FollowResponse(a.getUsername()))
+                .toList();
+    }
+
+    @Override
+    public void deleteAccount(String username, String password) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (!passwordEncoder.matches(password, account.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
+        }
+        accountRepository.delete(account);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getFollowers(String username){
+        List<Account> followers = accountRepository.findFollowersOf(username);
+        return followers.stream()
+                .map(a -> new FollowResponse(a.getUsername()))
+                .toList();
     }
 }
