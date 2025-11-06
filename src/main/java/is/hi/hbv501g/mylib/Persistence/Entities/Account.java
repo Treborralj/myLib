@@ -45,6 +45,8 @@ public class Account {
     private List<Book>  amReading = new ArrayList<>();
     @OneToMany(mappedBy = "account")
     private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "account")
+    private List<Post> posts = new ArrayList<>();
 
     public Account(String username, String password, String bio) {
         this.username = username;
@@ -142,6 +144,10 @@ public class Account {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    public List<Post> getPosts() { return posts; }
+
+    public void setPosts(List<Post> posts) { this.posts = posts; }
 
     public boolean isPresent() {
         return this != null;
