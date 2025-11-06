@@ -40,7 +40,7 @@ public interface AccountService {
     void updatePassword(String username, UpdatePasswordRequest dto);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
-    Account findById(int id);
+    //Account findById(int id);
     List<Account> discoverAccountByUsername(String partialUsername);
     SignInResponse login(String username, String password);
 
