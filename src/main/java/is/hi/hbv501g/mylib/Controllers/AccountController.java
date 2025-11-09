@@ -209,22 +209,22 @@ public class AccountController {
     }
     /**
      * Gets the names of all accounts a user is currently following
-     * @param me the username of an account
+     * @param username the username of an account
      * @return A list of usernames that are followed
      */
-    @GetMapping("/getFollowing")
-    public ResponseEntity<List<FollowResponse>> getFollowing(@AuthenticationPrincipal UserDetails me){
-        return ResponseEntity.ok(accountService.getFollowing(me.getUsername()));
+    @GetMapping("/getFollowing/{username}")
+    public ResponseEntity<List<FollowResponse>> getFollowing(@AuthenticationPrincipal String username){
+        return ResponseEntity.ok(accountService.getFollowing(username));
     }
 
     /**
      * Gets the names of all accounts currently following a user
-     * @param me the username of an account
+     * @param username the username of an account
      * @return A list of usernames that are following
      */
-    @GetMapping("/getFollowers")
-    public ResponseEntity<List<FollowResponse>> getFollowers(@AuthenticationPrincipal UserDetails me){
-        return ResponseEntity.ok(accountService.getFollowers(me.getUsername()));
+    @GetMapping("/getFollowers/{username}")
+    public ResponseEntity<List<FollowResponse>> getFollowers(@AuthenticationPrincipal String username){
+        return ResponseEntity.ok(accountService.getFollowers(username));
     }
 
     /**
