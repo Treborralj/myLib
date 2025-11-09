@@ -8,6 +8,7 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
+import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
 import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
@@ -41,24 +42,35 @@ public class AccountServiceImplementation implements AccountService {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    /*
-    Save an account to the repository
+
+
+    /**
+     * Saves the given account to the repository.
+     *
+     * @param account the account to save
+     * @return the saved account 
      */
     @Override
     public Account save(Account account) {
         return accountRepository.save(account);
     }
 
-    /*
-    removes an account from the repository
+    /**
+     * Deletes the given account from the repository.
+     *
+     * @param account the account to delete
      */
     @Override
     public void delete(Account account) {
         accountRepository.delete(account);
     }
 
-    /*
-    Takes in an update request and updates any field that has been changed. returns a response.
+    /**
+     * Updates the profile (username, bio) of the account belonging to the given username.
+     *
+     * @param username the username of the account to update
+     * @param dto the account update payload
+     * @return a DTO containing the updated account info
      */
     @Override
     public UpdateAccountResponse updateAccount(String username, UpdateAccountRequest dto) {
@@ -75,8 +87,12 @@ public class AccountServiceImplementation implements AccountService {
         return new UpdateAccountResponse(updated.getId(), updated.getUsername(), updated.getBio());
     }
 
-    /*
-    updateProfilePicture saves a profile picture to an account, throwing an error if it fails. returns a response entity
+    /**
+     * Stores a new profile picture for the given user.
+     *
+     * @param username the username of the account
+     * @param dto a DTO containing the uploaded image
+     * @return a DTO with the stored profile picture data
      */
     @Override
     public ProfilePictureResponse updateProfilePicture(String username, ProfilePictureRequest dto) throws IOException {
@@ -93,9 +109,12 @@ public class AccountServiceImplementation implements AccountService {
         return new ProfilePictureResponse(account);
     }
 
-    /*
-
-    fetches the profile picture of an account. returns a response entity containing it converted to 64byte string.
+    /**
+     * Fetches the profile picture of the given user.
+     * The returned DTO contains the image as a Base64 string, if present.
+     *
+     * @param username the username of the account
+     * @return a DTO with the user's profile picture
      */
     @Override
     public ProfilePictureResponse getProfilePicture(String username){
@@ -104,9 +123,13 @@ public class AccountServiceImplementation implements AccountService {
         return new ProfilePictureResponse(account);
     }
 
-    /*
-    Creates a new account object and saves it to the repository
-    */
+    /**
+     * Creates a new account from the provided signup data and saves it.
+     * The password is encoded before persisting.
+     *
+     * @param dto the signup payload
+     * @return the persisted account
+     */
     @Override
     public Account createNewAccount(CreateAccountRequest dto){
         Account account = new Account();
@@ -115,18 +138,26 @@ public class AccountServiceImplementation implements AccountService {
         return accountRepository.save(account);
     }
 
-    /*
-    checks if an entity exist in the repository based on username
+    
+    /**
+     * Checks whether an account exists with the given username.
+     *
+     * @param username the username to look up
+     * @return true if an account exists, false otherwise
      */
     @Override
     public boolean existsByUsername(String username) {
         return accountRepository.findByUsername(username).isPresent();
     }
 
+    /**
+     * Updates the password for the given user after verifying the current password
+     * and confirming that the new passwords match.
+     *
+     * @param username the username of the account
+     * @param dto the password change payload
+     */
     @Override
-    /*
-    add PasswordEncoder for hashing? method needs to get updated once hashing method is sorted out
-    */
     public void updatePassword(String username, UpdatePasswordRequest dto){
         Account account = accountRepository.findByUsername(username).
                 orElseThrow(() -> new RuntimeException("Account not found"));
@@ -143,8 +174,12 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(account);
     }
 
-    /*
-    private method for confirming if two passwords match. Throws an error if they don't match
+    /**
+     * Ensures that the two provided password values are both present and equal.
+     *
+     * @param newPassword the new password
+     * @param confirmPassword the repeated new password
+     * @throws RuntimeException if one is missing or they do not match
      */
     private void confirmNewPassword(String newPassword, String confirmPassword){
         if (newPassword == null || confirmPassword == null){
@@ -155,33 +190,47 @@ public class AccountServiceImplementation implements AccountService {
         }
     }
 
-    /*
-    Returns a list of all accounts
+    /**
+     * Returns all accounts in the system.
+     *
+     * @return list of all accounts
      */
     @Override
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
-    /*
-    finds a account based on username and returns that account. if it does not exist, it returns null
+
+    /**
+     * Looks up an account by its username.
+     *
+     * @param username the username to search for
+     * @return an Optional containing the account if found
      */
     @Override
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
     }
 
-   // @Override
-    //public Account findById(int id) {
-       // return null;
-   // }
 
+    /**
+     * Finds accounts whose username contains the given string
+     *
+     * @param username the full or partial username to search for
+     * @return list of matching accounts
+     */
     @Override
     public List<Account> discoverAccountByUsername(String username){
         return accountRepository.findByUsernameContainingIgnoreCase(username);
     }
-    /*
-    takes in a username and password and check if they match with the repository. if they do, it returns a response.
-    This throws an error if either field do not mach with stored info.
+
+
+    /**
+     * Validates the provided username and password against stored credentials.
+     *
+     * @param username the username to authenticate
+     * @param password the raw password to check
+     * @return a DTO with minimal account info if credentials are valid
+     * @throws IllegalArgumentException if username is unknown or password is wrong
      */
     @Override
     public SignInResponse login(String username, String password) {
@@ -194,23 +243,36 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Takes in a username and returns the wantToRead list associated with the account
-     * @param username
-     * @return
+     * Returns the "want to read" list for the specified user.
+     *
+     * @param username the username of the account
+     * @return list of books the user wants to read
      */
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public List<Book> getWantToRead(String username) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        System.out.println(account.getWantToRead());
-        return account.getWantToRead();
+    public List<BookResponse> getWantToRead(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getWantToRead()
+                .stream()
+                .map(b -> new BookResponse(
+                        b.getId(),
+                        b.getName(),
+                        b.getGenre(),
+                        b.getIsbn(),
+                        b.getWriter(),
+                        b.getScore(),
+                        java.util.List.of()
+                ))
+                .toList();
     }
 
     /**
-     * Takes in an account id and a book and adds the book to the wantToRead list associated with the account
-     * @param username
-     * @param book
+     * Adds a book to the "want to read" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param book the book to add
      */
     @Transactional
     @Override
@@ -222,9 +284,10 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Takes in a username and a book id and removes the book from the wantToRead list associated with the account
-     * @param username
-     * @param bookId
+     * Removes a book from the "want to read" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param bookId the id of the book to remove
      */
     @Transactional
     @Override
@@ -244,23 +307,36 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(account);
     }
     /**
-     * Takes in an account id and returns the haveRead list associated with the account
-     * @param username
-     * @return
+     * Returns the "have read" list for the specified user.
+     *
+     * @param username the username of the account
+     * @return list of books the user has finished
      */
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public List<Book> getHaveRead(String username) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        System.out.println(account.getHaveRead());
-        return account.getHaveRead();
+    public List<BookResponse> getHaveRead(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getHaveRead()
+                .stream()
+                .map(b -> new BookResponse(
+                        b.getId(),
+                        b.getName(),
+                        b.getGenre(),
+                        b.getIsbn(),
+                        b.getWriter(),
+                        b.getScore(),
+                        java.util.List.of()
+                ))
+                .toList();
     }
 
     /**
-     * Takes in an account id and a book and adds the book to the haveRead list associated with the account
-     * @param username
-     * @param book
+     * Adds a book to the "have read" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param book the book to add
      */
     @Transactional
     @Override
@@ -272,9 +348,10 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
-     * @param username
-     * @param bookId
+     * Removes a book from the "have read" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param bookId the id of the book to remove
      */
     @Transactional
     @Override
@@ -295,23 +372,36 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Takes in an account id and returns the amReading list associated with the account
-     * @param username
-     * @return
+     * Returns the "currently reading" list for the specified user.
+     *
+     * @param username the username of the account
+     * @return list of books the user is currently reading
      */
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
-    public List<Book> getAmReading(String username) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        System.out.println(account.getAmReading());
-        return account.getAmReading();
+    public List<BookResponse> getAmReading(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        return account.getAmReading()
+                .stream()
+                .map(b -> new BookResponse(
+                        b.getId(),
+                        b.getName(),
+                        b.getGenre(),
+                        b.getIsbn(),
+                        b.getWriter(),
+                        b.getScore(),
+                        java.util.List.of()
+                ))
+                .toList();
     }
 
     /**
-     * Takes in an account id and a book and adds the book to the amReading list associated with the account
-     * @param username
-     * @param book
+     * Adds a book to the "currently reading" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param book the book to add
      */
     @Transactional
     @Override
@@ -323,9 +413,10 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Takes in an account id and a book id and removes the book from the haveRead list associated with the account
-     * @param username
-     * @param bookId
+     * Removes a book from the "currently reading" list of the specified user.
+     *
+     * @param username the username of the account
+     * @param bookId the id of the book to remove
      */
     @Transactional
     @Override
@@ -345,6 +436,13 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(account);
     }
 
+
+    /**
+     * Creates a follow relation where one user starts following another.
+     *
+     * @param followerName the username of the follower
+     * @param followingName the username of the account to follow
+     */
     @Transactional
     @Override
     public void followUser(String followerName, String followingName){
@@ -358,6 +456,14 @@ public class AccountServiceImplementation implements AccountService {
         follower.getFollowing().add(following);
         accountRepository.save(follower);
     }
+
+
+    /**
+     * Removes a follow relation where one user was following another.
+     *
+     * @param followerName the username of the follower 
+     * @param followingName the username of the account to unfollow
+     */
     @Transactional
     @Override
     public void unfollowUser(String followerName, String followingName){
@@ -372,6 +478,14 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.save(follower);
     }
 
+
+    /**
+     * Returns a list of accounts that the specified user is following.
+     *
+     * @param username the username whose followings to fetch
+     * @return list of usernames wrapped in follow responses
+     */
+    @Override
     @Transactional(readOnly = true)
     public List<FollowResponse> getFollowing(String username){
         List<Account> following = accountRepository.findFollowingOf(username);
@@ -380,6 +494,14 @@ public class AccountServiceImplementation implements AccountService {
                 .toList();
     }
 
+
+    /**
+     * Deletes the account of the specified user after verifying their password.
+     *
+     * @param username the username of the account to delete
+     * @param password the current password to verify
+     * @throws ResponseStatusException if the user is not found or the password is wrong
+     */
     @Override
     public void deleteAccount(String username, String password) {
         Account account = accountRepository.findByUsername(username)
@@ -390,6 +512,14 @@ public class AccountServiceImplementation implements AccountService {
         accountRepository.delete(account);
     }
 
+
+    /**
+     * Returns a list of accounts that are following the specified user.
+     *
+     * @param username the username whose followers to fetch
+     * @return list of usernames  
+     */
+    @Override
     @Transactional(readOnly = true)
     public List<FollowResponse> getFollowers(String username){
         List<Account> followers = accountRepository.findFollowersOf(username);
@@ -398,55 +528,58 @@ public class AccountServiceImplementation implements AccountService {
                 .toList();
     }
 
+    /**
+     * Builds a full user profile response for the given username, including posts,
+     * reviews, followers, following and profile picture.
+     *
+     * @param username the username whose profile to fetch
+     * @return a user profile DTO
+     */
 
     @Override
-@Transactional(readOnly = true)
-public UserProfileResponse getUserProfile(String username) {
-    Account account = accountRepository.findByUsername(username)
-            .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+    @Transactional(readOnly = true)
+    public UserProfileResponse getUserProfile(String username) {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
 
-    // posts -> PostResponse
-    List<PostResponse> posts = account.getPosts()
-            .stream()
-            .map(p -> new PostResponse(
-                    p.getId(),
-                    p.getText(),
-                    p.getTime()
-            ))
-            .toList();
+        List<PostResponse> posts = account.getPosts()
+                .stream()
+                .map(p -> new PostResponse(
+                        p.getId(),
+                        p.getText(),
+                        p.getTime()
+                ))
+                .toList();
 
-    // reviews -> ReviewResponse
-    List<ReviewResponse> reviews = account.getReviews()
-            .stream()
-            .map(r -> new ReviewResponse(
-                    r.getId(),
-                    r.getText(),
-                    r.getTime(),
-                    r.getScore()
-            ))
-            .toList();
+        List<ReviewResponse> reviews = account.getReviews()
+                .stream()
+                .map(r -> new ReviewResponse(
+                        r.getId(),
+                        r.getText(),
+                        r.getTime(),
+                        r.getScore()
+                ))
+                .toList();
 
-    // followers / following using your existing custom queries
-    List<FollowResponse> following = getFollowing(username);
-    List<FollowResponse> followers = getFollowers(username);
+        List<FollowResponse> following = getFollowing(username);
+        List<FollowResponse> followers = getFollowers(username);
 
-    // profile pic (may be null)
-    String profilePictureBase64 = null;
-    if (account.getProfilePic() != null) {
-            profilePictureBase64 = Base64.getEncoder().encodeToString(account.getProfilePic());
+        String profilePictureBase64 = null;
+        if (account.getProfilePic() != null) {
+                profilePictureBase64 = Base64.getEncoder().encodeToString(account.getProfilePic());
+            }
+
+            return new UserProfileResponse(
+                    account.getId(),
+                    account.getUsername(),
+                    account.getBio(),
+                    profilePictureBase64,
+                    posts,
+                    reviews,
+                    followers,
+                    following
+        );
         }
-
-        return new UserProfileResponse(
-                account.getId(),
-                account.getUsername(),
-                account.getBio(),
-                profilePictureBase64,
-                posts,
-                reviews,
-                followers,
-                following
-    );
-    }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,21 +1,13 @@
 package is.hi.hbv501g.mylib.Services.Implementation;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
-import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.Persistence.Entities.Post;
-import is.hi.hbv501g.mylib.Persistence.Entities.Review;
 import is.hi.hbv501g.mylib.Persistence.Repositories.AccountRepository;
-import is.hi.hbv501g.mylib.Persistence.Repositories.BookRepository;
 import is.hi.hbv501g.mylib.Persistence.Repositories.PostRepository;
-import is.hi.hbv501g.mylib.Persistence.Repositories.ReviewRepository;
 import is.hi.hbv501g.mylib.Services.PostService;
 import is.hi.hbv501g.mylib.dto.Requests.CreatePostRequest;
-import is.hi.hbv501g.mylib.dto.Requests.CreateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePostRequest;
-import is.hi.hbv501g.mylib.dto.Requests.UpdateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
-import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
-import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -45,6 +37,14 @@ public class PostServiceImplementation implements PostService {
         );
     }
 
+
+    /**
+     * Creates a new post for the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param request the post creation payload
+     * @return the created post as a DTO
+     */
     @Override
     public PostResponse addPost(UserDetails me, CreatePostRequest request) {
         Account account = accountRepository.findByUsername(me.getUsername()).
@@ -54,6 +54,13 @@ public class PostServiceImplementation implements PostService {
         return toDto(post);
     }
 
+
+    /**
+     * Deletes a post if it belongs to the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param id the id of the post to delete
+     */
     @Override
     public void deletePost(UserDetails me, int id) {
         Post post = postRepository.findPostById(id);
@@ -63,6 +70,14 @@ public class PostServiceImplementation implements PostService {
         postRepository.deleteById(id);
     }
 
+
+    /**
+     * Updates a post if it belongs to the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param dto the post update payload
+     * @return the updated post as a DTO
+     */
     @Override
     @Transactional
     public PostResponse updatePost(UserDetails me, UpdatePostRequest dto) {
@@ -75,6 +90,13 @@ public class PostServiceImplementation implements PostService {
         return toDto(postRepository.save(post));
     }
 
+
+    /**
+     * Returns all posts belonging to the given username.
+     *
+     * @param username the account whose posts to fetch
+     * @return list of post DTOs
+     */
     @Override
     @Transactional
     public List<PostResponse> getAccountPosts(String username) {

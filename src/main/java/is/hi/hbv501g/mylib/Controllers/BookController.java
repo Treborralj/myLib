@@ -18,13 +18,12 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @RequestMapping("/")
-    public String prufa() {
-        return "Halló Heimur";
-    }
+
 
     /**
      * Retrieves all books from the database, mapped to DTOs.
+     * @return list of all books
+
      */
     @GetMapping("/all")
     public List<BookResponse> getAllBooks() {
@@ -32,8 +31,16 @@ public class BookController {
     }
 
     /**
-     * Searches for books that match the given parameters.
-     * Any missing parameter is ignored.
+     * Searches for books using any combination of the provided parameters.
+     * Blank or missing parameters are ignored.
+     *
+     * @param id    optional book id
+     * @param name  optional book name 
+     * @param genre optional genre 
+     * @param isbn  optional isbn 
+     * @param writer optional writer 
+     * @param scoreStr optional score 
+     * @return list of matching books
      */
     @GetMapping("/search")
     public List<BookResponse> findBooks(
@@ -53,11 +60,23 @@ public class BookController {
         return bookService.findBooksAsResponses(id, n, g, i, w, s);
     }
 
+
+    /**
+     * Creates a new book from the request body.
+     *
+     * @param body create-book payload
+     * @return the created book as a response DTO
+     */
     @PostMapping("/add")
     public BookResponse addBook(@RequestBody CreateBookRequest body) {
         return bookService.addBookFromRequest(body);
     }
 
+    /**
+     * Deletes the book with the given ID.
+     *
+     * @param id the book's id
+     */
     @DeleteMapping("/remove/{id}")
     public void removeBook(@PathVariable int id) {
         bookService.deleteBook(id);

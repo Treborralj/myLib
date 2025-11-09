@@ -46,7 +46,6 @@ public interface AccountService {
     void updatePassword(String username, UpdatePasswordRequest dto);
     List<Account> findAll();
     Optional<Account> findByUsername(String username);
-    //Account findById(int id);
     List<Account> discoverAccountByUsername(String partialUsername);
     SignInResponse login(String username, String password);
 
@@ -54,9 +53,9 @@ public interface AccountService {
     void addBookToWantToRead(String username, Book book);
     void addBookToHaveRead(String username, Book book);
     void addBookToAmReading(String username, Book book);
-    List<Book> getWantToRead(String username);
-    List<Book> getHaveRead(String username);
-    List<Book> getAmReading(String username);
+    List<BookResponse> getWantToRead(String username);
+    List<BookResponse> getHaveRead(String username);
+    List<BookResponse> getAmReading(String username);
     void removeBookFromHaveRead(String username, int bookId);
     void removeBookFromWantToRead(String username, int bookId);
     void removeBookFromAmReading(String username, int bookId);

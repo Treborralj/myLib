@@ -8,20 +8,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface AccountRepository extends JpaRepository<Account, Integer> {
-    Account save(Account account);
-    void delete(Account account);
-    void deleteById(int id);
-    List<Account> findAll();
+
     Optional<Account> findByUsername(String username);
 
-    List<Account> findByUsernameContainingIgnoreCase(String username);
+    boolean existsByUsername(String username);
 
-    Account findById(int id);
-    static boolean existsByUsername(String username) {
-        return false;
-    }
+    List<Account> findByUsernameContainingIgnoreCase(String username);
 
     @Query("""
        select f

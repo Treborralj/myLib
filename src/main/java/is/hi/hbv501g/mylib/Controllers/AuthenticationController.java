@@ -26,6 +26,13 @@ public class AuthenticationController {
         this.authManager = authManager;
         this.jwtService = jwtService;
     }
+
+    /**
+     * Authenticates a user with username and password and returns a JWT.
+     *
+     * @param request the login credentials
+     * @return a map containing the token and its type (Bearer)
+     */
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody SignInRequest request) {
         Authentication auth = authManager.authenticate(
@@ -35,6 +42,14 @@ public class AuthenticationController {
         String token = jwtService.generateToken(user.getUsername());
         return Map.of("token", token, "tokenType", "Bearer");
     }
+
+
+    /**
+     * Returns basic info about the current user.
+     *
+     * @param me the authenticated users details
+     * @return a map with the username
+     */
     @GetMapping("/me")
     public Map<String, String> me(@AuthenticationPrincipal UserDetails me) {
         return Map.of("username", me.getUsername());

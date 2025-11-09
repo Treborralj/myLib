@@ -22,21 +22,52 @@ public class BookServiceImplementation implements BookService {
         this.bookRepository = bookRepository;
     }
 
+
+    /**
+     * Finds all books whose name matches the given value.
+     *
+     * @param name the book name to search for
+     * @return list of matching books
+     */
     @Override
     public List<Book> findBookByName(String name) {
         return bookRepository.findBookByName(name);
     }
 
+
+    /**
+     * Returns all books in the repository.
+     *
+     * @return list of all books
+     */
     @Override
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
+
+    /**
+     * Finds a single book by its id.
+     *
+     * @param id the id of the book
+     * @return the matching book, or null if not found 
+     */
     @Override
     public Book findBookById(int id) {
         return bookRepository.findBookById(id);
     }
 
+
+    /**
+     * Creates and saves a new book from given parameters.
+     * Checks that name and ISBN are present and that the ISBN is unique.
+     *
+     * @param name   the book's title
+     * @param genre  the book's genre
+     * @param isbn   the book's ISBN (must be unique)
+     * @param writer the book's author
+     * @return the saved book
+     */
     @Override
     public Book addBook(String name, String genre, String isbn, String writer) {
         if (name == null || name.isBlank()) {
@@ -55,6 +86,13 @@ public class BookServiceImplementation implements BookService {
         return bookRepository.save(newBook);
     }
 
+
+    /**
+     * Saves a new book after checking that its ISBN is unique.
+     *
+     * @param book the book to save
+     * @return the saved book
+     */
     @Override
     public Book addBook(Book book) {
         Book existingBook = bookRepository.findByIsbn(book.getIsbn());
@@ -64,6 +102,18 @@ public class BookServiceImplementation implements BookService {
         return bookRepository.save(book);
     }
 
+
+    /**
+     * Finds books by filtering using the provided parameters.
+     *
+     * @param id      id
+     * @param name    name 
+     * @param genre   genre 
+     * @param isbn    isbn 
+     * @param writer  writer 
+     * @param score   exact score
+     * @return list of books matching the filters
+     */
     @Override
     public List<Book> findBooks(Integer id,
                                 String name,
@@ -89,14 +139,26 @@ public class BookServiceImplementation implements BookService {
         return field.toLowerCase().contains(needle.toLowerCase());
     }
 
+    /**
+     * Deletes the book with the given id.
+     *
+     * @param id the id of the book to delete
+     * @throws NoSuchElementException if the book does not exist
+     */
     @Override
     public void deleteBook(int id) {
         if (!bookRepository.existsById(id)) {
             throw new NoSuchElementException("Book not found with id: " + id);
         }
         bookRepository.deleteById(id);
-    }
+    }   
 
+    /**
+     * Deletes the given book.
+     *
+     * @param book the book to delete
+     * @throws NoSuchElementException if the book is null or does not exist
+     */
     @Override
     public void deleteBook(Book book) {
         if (book == null || !bookRepository.existsById(book.getId())) {
@@ -105,6 +167,12 @@ public class BookServiceImplementation implements BookService {
         bookRepository.delete(book);
     }
 
+
+    /**
+     * Returns all books mapped to response DTOs.
+     *
+     * @return list of book response DTOs
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BookResponse> findAllAsResponses() {
@@ -132,12 +200,31 @@ public class BookServiceImplementation implements BookService {
         );
     }
 
+
+    /**
+     * Creates a new book from the given request and returns it as a response DTO.
+     *
+     * @param body the create-book request payload
+     * @return the created book as a DTO
+     */
     @Override
     public BookResponse addBookFromRequest(CreateBookRequest body) {
         Book saved = addBook(body.getName(), body.getGenre(), body.getIsbn(), body.getWriter());
         return toDto(saved);
     }
 
+
+    /**
+     * Finds books using the same filters as {@link #findBooks} and maps them to response DTOs.
+     *
+     * @param id      id
+     * @param name    name
+     * @param genre   genre
+     * @param isbn    isbn
+     * @param writer  writer
+     * @param score   score
+     * @return list of matching book DTOs
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BookResponse> findBooksAsResponses(Integer id,

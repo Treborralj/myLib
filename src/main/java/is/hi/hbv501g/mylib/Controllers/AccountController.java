@@ -55,8 +55,8 @@
         /**
          * Finds users whose username contains the given string.
          *
-         * @param username the search username string
-         * @return a list user object dto (id, username, bio)
+         * @param username the search string
+         * @return a list of user dto (id, username, bio)
          */
         @GetMapping("/discoverUser/{username}")
         public List<DiscoverUsersByUsernameRequest> discoverUser(@PathVariable String username) {
@@ -98,21 +98,10 @@
          * @param me the currently logged-in users credentials
         * @return List<BookResponse>
         */
-        @GetMapping("/getWantToRead")
-        public List<BookResponse> getWantToRead(@AuthenticationPrincipal UserDetails me) {
-            return accountService.getWantToRead(me.getUsername())
-                    .stream()
-                    .map(b -> new BookResponse(
-                            b.getId(),
-                            b.getName(),
-                            b.getGenre(),
-                            b.getIsbn(),
-                            b.getWriter(),
-                            b.getScore(),
-                            java.util.List.of()   
-                    ))
-                    .toList();
-        }
+    @GetMapping("/getWantToRead")
+    public List<BookResponse> getWantToRead(@AuthenticationPrincipal UserDetails me) {
+        return accountService.getWantToRead(me.getUsername());
+    }
 
         /**
          * Takes in the logged in users account and a book and adds the book to the wantToRead list associated with the account
@@ -136,23 +125,13 @@
         /**
          *  Takes in the logged in users account  id and returns the haveRead list associated with the account
          * @param me the currently logged-in users credentials
-         * @return List<Book>
+        * @return List<BookResponse>
          */
         @GetMapping("/haveRead")
         public List<BookResponse> getHaveRead(@AuthenticationPrincipal UserDetails me) {
-            return accountService.getHaveRead(me.getUsername())
-                    .stream()
-                    .map(b -> new BookResponse(
-                            b.getId(),
-                            b.getName(),
-                            b.getGenre(),
-                            b.getIsbn(),
-                            b.getWriter(),
-                            b.getScore(),
-                            java.util.List.of()
-                    ))
-                    .toList();
+            return accountService.getHaveRead(me.getUsername());
         }
+
         /**
          * Takes in an the logged in users account  and a book and adds the book to the haveRead list associated with the account
          * @param me the currently logged-in users credentials
@@ -172,24 +151,14 @@
             accountService.removeBookFromHaveRead(me.getUsername(), bookId);
         }
         /**
-         *  Takes in an the logged in users account  and returns the amReading list associated with the account
+         *  Takes in an the log ged in users account  and returns the amReading list associated with the account
          * @param me the currently logged-in users credentials
-         * @return List<Book>
+        * @return List<BookResponse>
+
          */
         @GetMapping("/amReading")
         public List<BookResponse> getAmReading(@AuthenticationPrincipal UserDetails me) {
-            return accountService.getAmReading(me.getUsername())
-                    .stream()
-                    .map(b -> new BookResponse(
-                            b.getId(),
-                            b.getName(),
-                            b.getGenre(),
-                            b.getIsbn(),
-                            b.getWriter(),
-                            b.getScore(),
-                            java.util.List.of()
-                    ))
-                    .toList();
+            return accountService.getAmReading(me.getUsername());
         }
         /**
          * Takes in an the logged in users account  and a book and adds the book to the amReading list associated with the account

@@ -44,6 +44,15 @@ public class ReviewServiceImplementation implements ReviewService {
         );
     }
 
+
+    /**
+     * Creates a new review for the given book, authored by the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param request the review creation payload (text, score, book id)
+     * @return the created review as a DTO
+     * @throws IllegalArgumentException if the account or book cannot be found
+     */
     @Override
     public ReviewResponse addReview(UserDetails me, CreateReviewRequest request) {
         Book book = bookRepository.findBookById(request.getBookId());
@@ -54,6 +63,14 @@ public class ReviewServiceImplementation implements ReviewService {
         return toDto(review);
     }
 
+
+    /**
+     * Deletes a review if it belongs to the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param id the id of the review to delete
+     * @throws RuntimeException if the review is not owned by the user
+     */
     @Override
     public void deleteReview(UserDetails me, int id) {
         Review review = reviewRepository.findReviewById(id);
@@ -63,6 +80,15 @@ public class ReviewServiceImplementation implements ReviewService {
         reviewRepository.deleteById(id);
     }
 
+
+    /**
+     * Updates a review if it belongs to the logged in user.
+     *
+     * @param me the logged in user's details
+     * @param dto the review update payload
+     * @return the updated review as a DTO
+     * @throws RuntimeException if the review is not owned by the user
+     */
     @Override
     @Transactional
     public ReviewResponse updateReview(UserDetails me, UpdateReviewRequest dto) {
@@ -76,6 +102,12 @@ public class ReviewServiceImplementation implements ReviewService {
         return toDto(reviewRepository.save(review));
     }
 
+    /**
+     * Returns all reviews written by the given username.
+     *
+     * @param username the account whose reviews to fetch
+     * @return list of review DTOs
+     */
     @Override
     @Transactional
     public List<ReviewResponse> getAccountReviews(String username) {
@@ -88,6 +120,13 @@ public class ReviewServiceImplementation implements ReviewService {
                 .toList();
     }
 
+    /**
+     * Returns all reviews written for the given book id.
+     *
+     * @param id the id of the book
+     * @return list of review DTOs
+     * @throws IllegalArgumentException if the book does not exist
+     */
     @Override
     @Transactional
     public List<ReviewResponse> getBookReviews(int id) {
@@ -99,6 +138,13 @@ public class ReviewServiceImplementation implements ReviewService {
                 .toList();
     }
 
+
+    /**
+     * Fetches the account info of the author of the given review.
+     *
+     * @param reviewId the id of the review
+     * @return account info for the review's author
+     */
     @Override
     @Transactional
     public UpdateAccountResponse fetchAccount(int reviewId) {
