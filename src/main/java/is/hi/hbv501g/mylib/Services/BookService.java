@@ -1,6 +1,7 @@
 package is.hi.hbv501g.mylib.Services;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
+import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface BookService {
     public void deleteBook(int id);
     public void deleteBook(Book book);
     List<Book> findBooks(Integer id,String name, String genre, String isbn, String writer, Double score);
-
+    List<BookResponse> findAllAsResponses();
 }

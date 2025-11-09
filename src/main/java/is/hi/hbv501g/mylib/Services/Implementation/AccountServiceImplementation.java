@@ -20,6 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+
+import is.hi.hbv501g.mylib.dto.Responses.UserProfileResponse;
+import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
+import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
+import java.util.Base64;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -381,4 +386,71 @@ public class AccountServiceImplementation implements AccountService {
                 .map(a -> new FollowResponse(a.getUsername()))
                 .toList();
     }
+
+
+    @Override
+@Transactional(readOnly = true)
+public UserProfileResponse getUserProfile(String username) {
+    Account account = accountRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+    // posts -> PostResponse
+    List<PostResponse> posts = account.getPosts()
+            .stream()
+            .map(p -> new PostResponse(
+                    p.getId(),
+                    p.getText(),
+                    p.getTime()
+            ))
+            .toList();
+
+    // reviews -> ReviewResponse
+    List<ReviewResponse> reviews = account.getReviews()
+            .stream()
+            .map(r -> new ReviewResponse(
+                    r.getId(),
+                    r.getText(),
+                    r.getTime(),
+                    r.getScore()
+            ))
+            .toList();
+
+    // followers / following using your existing custom queries
+    List<FollowResponse> following = getFollowing(username);
+    List<FollowResponse> followers = getFollowers(username);
+
+    // profile pic (may be null)
+    String profilePictureBase64 = null;
+    if (account.getProfilePic() != null) {
+            profilePictureBase64 = Base64.getEncoder().encodeToString(account.getProfilePic());
+        }
+
+        return new UserProfileResponse(
+                account.getId(),
+                account.getUsername(),
+                account.getBio(),
+                profilePictureBase64,
+                posts,
+                reviews,
+                followers,
+                following
+    );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse> getFeedFor(String username) {
+        List<Account> following = accountRepository.findFollowingOf(username);
+
+        return following.stream()
+                .flatMap(acc -> acc.getPosts().stream())
+                .sorted((p1, p2) -> p2.getTime().compareTo(p1.getTime()))
+                .map(p -> new PostResponse(
+                        p.getId(),
+                        p.getText(),
+                        p.getTime()
+                ))
+                .toList();
+    }
+
 }

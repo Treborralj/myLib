@@ -4,11 +4,14 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
+import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
 import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
 import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
+import is.hi.hbv501g.mylib.dto.Responses.UserProfileResponse;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
@@ -67,4 +70,7 @@ public interface AccountService {
     List<FollowResponse> getFollowing(String username);
 
     void deleteAccount(String username, String password);
+
+    UserProfileResponse getUserProfile(String username);
+    List<PostResponse> getFeedFor(String username);
 }

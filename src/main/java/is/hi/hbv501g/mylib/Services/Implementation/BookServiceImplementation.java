@@ -3,8 +3,11 @@ package is.hi.hbv501g.mylib.Services.Implementation;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import is.hi.hbv501g.mylib.Persistence.Repositories.BookRepository;
 import is.hi.hbv501g.mylib.Services.BookService;
+import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -168,5 +171,32 @@ public class BookServiceImplementation implements BookService {
             throw new NoSuchElementException("Book not found with id: " + (book != null ? book.getId() : "null"));
         }
         bookRepository.delete(book);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookResponse> findAllAsResponses() {
+        return bookRepository.findAll()
+                .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    private BookResponse toDto(Book b) {
+        var reviewTexts = (b.getReviews() == null)
+                ? java.util.List.<String>of()
+                : b.getReviews().stream()
+                    .map(r -> r.getText() == null ? "" : r.getText())
+                    .toList();
+
+        return new BookResponse(
+                b.getId(),
+                b.getName(),
+                b.getGenre(),
+                b.getIsbn(),
+                b.getWriter(),
+                b.getScore(),
+                reviewTexts
+        );
     }
 }

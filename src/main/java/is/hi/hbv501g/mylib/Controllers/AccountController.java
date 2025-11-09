@@ -237,4 +237,29 @@ public class AccountController {
         accountService.deleteAccount(me.getUsername(), password.getPassword());
 
     }
+
+
+    @GetMapping("/getAll")
+    public ResponseEntity<List<DiscoverUsersByUsernameRequest>> getAllAccounts() {
+        List<DiscoverUsersByUsernameRequest> users = accountService.findAll()
+            .stream()
+            .map(a -> new DiscoverUsersByUsernameRequest(
+                a.getId(),
+                a.getUsername(),
+                a.getBio()
+            ))
+            .toList();
+
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/profile/{username}")
+    public ResponseEntity<?> getUserProfile(@PathVariable String username) {
+        return ResponseEntity.ok(accountService.getUserProfile(username));
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<?> getFeed(@AuthenticationPrincipal UserDetails me) {
+        return ResponseEntity.ok(accountService.getFeedFor(me.getUsername()));
+    }
 }

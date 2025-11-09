@@ -52,10 +52,7 @@ public class BookController {
      */
     @GetMapping("/all")
     public List<BookResponse> getAllBooks() {
-        return bookService.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
+        return bookService.findAllAsResponses();
     }
 
 
@@ -78,21 +75,35 @@ public class BookController {
     // GET /books/search?name=...&genre=...&isbn=...&writer=...&score=...
     @GetMapping("/search")
     public List<BookResponse> findBooks(
-        @RequestParam(required = false) Integer id,
-        @RequestParam(required = false) String name,
-        @RequestParam(required = false) String genre,
-        @RequestParam(required = false) String isbn,
-        @RequestParam(required = false) String writer,
-        @RequestParam(required = false, name = "score") String scoreStr
-    ) {
-        String n = normalize(name);
-        String g = normalize(genre);
-        String i = normalize(isbn);
-        String w = normalize(writer);
-        Double s = parseScore(scoreStr);
+                @RequestParam(required = false) Integer id,
+                @RequestParam(required = false) String name,
+                @RequestParam(required = false) String genre,
+                @RequestParam(required = false) String isbn,
+                @RequestParam(required = false) String writer,
+                @RequestParam(required = false, name = "score") String scoreStr
+        ) {
+            String n = normalize(name);
+            String g = normalize(genre);
+            String i = normalize(isbn);
+            String w = normalize(writer);
+            Double s = parseScore(scoreStr);
 
-        return bookService.findBooks(id, n, g, i, w, s) 
-            .stream().map(this::toDto).toList();
+            return bookService.findBooks(id, n, g, i, w, s)
+                    .stream()
+                    .map(b -> new BookResponse(
+                            b.getId(),
+                            b.getName(),
+                            b.getGenre(),
+                            b.getIsbn(),
+                            b.getWriter(),
+                            b.getScore(),
+                            (b.getReviews() == null)
+                                    ? java.util.List.<String>of()
+                                    : b.getReviews().stream()
+                                        .map(r -> r.getText() == null ? "" : r.getText())
+                                        .toList()
+                    ))
+                    .toList();
     }
 
     private String normalize(String v) {
@@ -132,12 +143,20 @@ public class BookController {
     @PostMapping("/add")
     public BookResponse addBook(@RequestBody CreateBookRequest body) {
         Book saved = bookService.addBook(
-            body.getName(),
-            body.getGenre(),
-            body.getIsbn(),
-            body.getWriter()
+                body.getName(),
+                body.getGenre(),
+                body.getIsbn(),
+                body.getWriter()
         );
-        return toDto(saved); 
+        return new BookResponse(
+                saved.getId(),
+                saved.getName(),
+                saved.getGenre(),
+                saved.getIsbn(),
+                saved.getWriter(),
+                saved.getScore(),
+                java.util.List.of()
+        );
     }
 
 
@@ -159,22 +178,5 @@ public class BookController {
     }
 
     
-    private BookResponse toDto(Book b) {
-        /* 
-        List<String> reviewTexts = (b.getReviews() == null)
-                ? List.of()
-                : b.getReviews().stream()
-                .map(r -> r.getText() == null ? "" : r.getText())
-                .toList();
-    */
-        return new BookResponse(
-                b.getId(),
-                b.getName(),
-                b.getGenre(),
-                b.getIsbn(),
-                b.getWriter(),
-                b.getScore(),
-                java.util.List.of()
-        );
-    }
+
 }
