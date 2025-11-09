@@ -21,8 +21,8 @@ public class Account {
     private String password;
     private String bio;
 
-    @Lob
-    @Column(columnDefinition = "BYTEA")
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_pic")
     private byte[] profilePic;
 
     @ManyToMany
@@ -40,9 +40,13 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  wantToRead = new ArrayList<>();
     @ManyToMany
-    @JoinTable(name = "account_am_readin", joinColumns = @JoinColumn(name = "account_id"),
+    @JoinTable(name = "account_am_reading", joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  amReading = new ArrayList<>();
+    @OneToMany(mappedBy = "account")
+    private List<Review> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "account")
+    private List<Post> posts = new ArrayList<>();
 
     public Account(String username, String password, String bio) {
         this.username = username;
@@ -132,6 +136,18 @@ public class Account {
     public void setAmReading(List<Book> amReading) {
         this.amReading = amReading;
     }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public List<Post> getPosts() { return posts; }
+
+    public void setPosts(List<Post> posts) { this.posts = posts; }
 
     public boolean isPresent() {
         return this != null;

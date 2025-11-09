@@ -26,13 +26,13 @@ public class Review {
     @JoinColumn(name="book_id")
     private Book book;
     private LocalDateTime time;
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+
     private double score;
 
-    public Review( String text, Account account, LocalDateTime time, double score) {
+    public Review( String text, Account account, Book book, LocalDateTime time, double score) {
         this.text = text;
         this.account = account;
+        this.book = book;
         this.time = time;
         this.score = score;
     }
@@ -64,6 +64,10 @@ public class Review {
         this.account = account;
     }
 
+    public Book getBook() { return book; }
+
+    public void setBook(Book book) { this.book = book; }
+
     public LocalDateTime getTime() {
         return time;
     }
@@ -72,13 +76,6 @@ public class Review {
         this.time = time;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 
     public double getScore() {
         return score;
