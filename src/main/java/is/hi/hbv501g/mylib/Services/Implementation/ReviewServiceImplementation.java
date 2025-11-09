@@ -72,7 +72,6 @@ public class ReviewServiceImplementation implements ReviewService {
         }
         if(dto.getText() != null) {review.setText(dto.getText());}
         review.setScore(dto.getScore());
-        review.setComments(review.getComments());
         review.setAccount(review.getAccount());
         return toDto(reviewRepository.save(review));
     }

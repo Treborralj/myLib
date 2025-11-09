@@ -40,7 +40,7 @@ public class Account {
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  wantToRead = new ArrayList<>();
     @ManyToMany
-    @JoinTable(name = "account_am_readin", joinColumns = @JoinColumn(name = "account_id"),
+    @JoinTable(name = "account_am_reading", joinColumns = @JoinColumn(name = "account_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book>  amReading = new ArrayList<>();
     @OneToMany(mappedBy = "account")

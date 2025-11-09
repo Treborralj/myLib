@@ -3,6 +3,7 @@ package is.hi.hbv501g.mylib.Services;
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
+import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
 import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
 import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
 import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
@@ -48,6 +49,7 @@ public interface AccountService {
     //Account findById(int id);
     List<Account> discoverAccountByUsername(String partialUsername);
     SignInResponse login(String username, String password);
+
 
     void addBookToWantToRead(String username, Book book);
     void addBookToHaveRead(String username, Book book);

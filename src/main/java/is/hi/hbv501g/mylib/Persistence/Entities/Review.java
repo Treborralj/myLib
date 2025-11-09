@@ -26,8 +26,7 @@ public class Review {
     @JoinColumn(name="book_id")
     private Book book;
     private LocalDateTime time;
-    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+
     private double score;
 
     public Review( String text, Account account, Book book, LocalDateTime time, double score) {
@@ -77,13 +76,6 @@ public class Review {
         this.time = time;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 
     public double getScore() {
         return score;

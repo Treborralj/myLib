@@ -71,7 +71,6 @@ public class PostServiceImplementation implements PostService {
             throw new RuntimeException("Users can only edit their own posts");
         }
         if(dto.getText() != null) {post.setText(dto.getText());}
-        post.setComments(post.getComments());
         post.setAccount(post.getAccount());
         return toDto(postRepository.save(post));
     }

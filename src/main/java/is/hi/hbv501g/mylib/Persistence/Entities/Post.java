@@ -23,8 +23,6 @@ public class Post {
     @JoinColumn(name="account_id")
     private Account account;
     private LocalDateTime time;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
 
     public Post(String text, Account account, LocalDateTime time) {
         this.text = text;
@@ -67,11 +65,5 @@ public class Post {
         this.time = time;
     }
 
-    public List<Comment> getComments() {
-        return comments;
-    }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
 }

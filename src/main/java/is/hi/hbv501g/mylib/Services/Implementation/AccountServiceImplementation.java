@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Iterator;
 
 
 @Service
@@ -63,11 +64,10 @@ public class AccountServiceImplementation implements AccountService {
     public UpdateAccountResponse updateAccount(String username, UpdateAccountRequest dto) {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        if (dto.getBio() != null && dto.getBio().equals(account.getBio())){
+        if (dto.getBio() != null && !dto.getBio().equals(account.getBio())) {
             account.setBio(dto.getBio());
         }
-        if (dto.getUsername() != null && dto.getUsername().equals(account.getUsername())){
+        if (dto.getUsername() != null && !dto.getUsername().equals(account.getUsername())) {
             account.setUsername(dto.getUsername());
         }
 
@@ -229,17 +229,20 @@ public class AccountServiceImplementation implements AccountService {
     @Transactional
     @Override
     public void removeBookFromWantToRead(String username, int bookId) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        for(Book book : account.getWantToRead()) {
-            if(book.getId() == bookId) {
-                account.getWantToRead().remove(book);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        Iterator<Book> it = account.getWantToRead().iterator();
+        while (it.hasNext()) {
+            Book b = it.next();
+            if (b.getId() == bookId) {
+                it.remove();
                 break;
             }
         }
+
         accountRepository.save(account);
     }
-
     /**
      * Takes in an account id and returns the haveRead list associated with the account
      * @param username
@@ -276,14 +279,18 @@ public class AccountServiceImplementation implements AccountService {
     @Transactional
     @Override
     public void removeBookFromHaveRead(String username, int bookId) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        for(Book book : account.getHaveRead()) {
-            if(book.getId() == bookId) {
-                account.getHaveRead().remove(book);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        Iterator<Book> it = account.getHaveRead().iterator();
+        while (it.hasNext()) {
+            Book b = it.next();
+            if (b.getId() == bookId) {
+                it.remove();
                 break;
             }
         }
+
         accountRepository.save(account);
     }
 
@@ -323,14 +330,18 @@ public class AccountServiceImplementation implements AccountService {
     @Transactional
     @Override
     public void removeBookFromAmReading(String username, int bookId) {
-        Account account = accountRepository.findByUsername(username).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        for(Book book : account.getAmReading()) {
-            if(book.getId() == bookId) {
-                account.getAmReading().remove(book);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
+
+        Iterator<Book> it = account.getAmReading().iterator();
+        while (it.hasNext()) {
+            Book b = it.next();
+            if (b.getId() == bookId) {
+                it.remove();
                 break;
             }
         }
+
         accountRepository.save(account);
     }
 

@@ -2,7 +2,6 @@ package is.hi.hbv501g.mylib.dto.Responses;
 
 import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import is.hi.hbv501g.mylib.Persistence.Entities.Book;
-import is.hi.hbv501g.mylib.Persistence.Entities.Comment;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
