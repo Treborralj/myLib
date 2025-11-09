@@ -36,7 +36,7 @@
          * @return 201 with basic account info, or 400 if username is taken
          */
         @PostMapping("/signup")
-        public ResponseEntity<?> signupFixed(@RequestBody CreateAccountRequest dto){
+        public ResponseEntity<?> signup(@RequestBody CreateAccountRequest dto){
             if(accountService.existsByUsername(dto.getUsername())){
                 return ResponseEntity.badRequest().body(Map.of("error", "Username is taken"));
             }
