@@ -36,7 +36,7 @@ public class SecurityConfig {
             .httpBasic(basic -> basic.disable())
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/auth/login", "/account/signup").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/login", "/account/signup","/books/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/account/discoverUser/**", "/getFollowing/**",
                     "/getFollowers/**","/books/**").permitAll()
 
