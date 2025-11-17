@@ -12,6 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/******************************************************************************
+ * @author Róbert A. Jack and Rúnar Sveinsson.
+ * E-mail : ral9@hi.is and ras89@hi.is
+ * Description : Implementation of the service interface for books
+ *
+ *****************************************************************************/
 @Service
 public class BookServiceImplementation implements BookService {
 
@@ -21,42 +27,6 @@ public class BookServiceImplementation implements BookService {
     public BookServiceImplementation(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
-
-
-    /**
-     * Finds all books whose name matches the given value.
-     *
-     * @param name the book name to search for
-     * @return list of matching books
-     */
-    @Override
-    public List<Book> findBookByName(String name) {
-        return bookRepository.findBookByName(name);
-    }
-
-
-    /**
-     * Returns all books in the repository.
-     *
-     * @return list of all books
-     */
-    @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
-
-
-    /**
-     * Finds a single book by its id.
-     *
-     * @param id the id of the book
-     * @return the matching book, or null if not found 
-     */
-    @Override
-    public Book findBookById(int id) {
-        return bookRepository.findBookById(id);
-    }
-
 
     /**
      * Creates and saves a new book from given parameters.
@@ -85,23 +55,6 @@ public class BookServiceImplementation implements BookService {
         Book newBook = new Book(name, genre, isbn, writer, 0.0);
         return bookRepository.save(newBook);
     }
-
-
-    /**
-     * Saves a new book after checking that its ISBN is unique.
-     *
-     * @param book the book to save
-     * @return the saved book
-     */
-    @Override
-    public Book addBook(Book book) {
-        Book existingBook = bookRepository.findByIsbn(book.getIsbn());
-        if (existingBook != null) {
-            throw new IllegalArgumentException("A book with this ISBN already exists.");
-        }
-        return bookRepository.save(book);
-    }
-
 
     /**
      * Finds books by filtering using the provided parameters.
@@ -151,22 +104,7 @@ public class BookServiceImplementation implements BookService {
             throw new NoSuchElementException("Book not found with id: " + id);
         }
         bookRepository.deleteById(id);
-    }   
-
-    /**
-     * Deletes the given book.
-     *
-     * @param book the book to delete
-     * @throws NoSuchElementException if the book is null or does not exist
-     */
-    @Override
-    public void deleteBook(Book book) {
-        if (book == null || !bookRepository.existsById(book.getId())) {
-            throw new NoSuchElementException("Book not found with id: " + (book != null ? book.getId() : "null"));
-        }
-        bookRepository.delete(book);
     }
-
 
     /**
      * Returns all books mapped to response DTOs.
@@ -227,12 +165,8 @@ public class BookServiceImplementation implements BookService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<BookResponse> findBooksAsResponses(Integer id,
-                                                   String name,
-                                                   String genre,
-                                                   String isbn,
-                                                   String writer,
-                                                   Double score) {
+    public List<BookResponse> findBooksAsResponses(Integer id, String name, String genre, String isbn,
+                                                   String writer, Double score) {
         return findBooks(id, name, genre, isbn, writer, score)
                 .stream()
                 .map(this::toDto)

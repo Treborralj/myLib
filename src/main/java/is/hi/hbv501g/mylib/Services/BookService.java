@@ -8,29 +8,21 @@ import java.util.List;
 
 /******************************************************************************
  * @author Rúnar Ágúst
- * Tölvupóstur: ras89@hi.is
- * Lýsing : 
+ * E-mail: ras89@hi.is
+ * Description : Service Interface class for books
  *
  *****************************************************************************/
 public interface BookService {
-    public List<Book> findBookByName(String name);
-    public List<Book> findAll();
-    public Book findBookById(int id);
     public Book addBook(String name, String genre, String isbn, String writer);
-    public Book addBook(Book book);
 
     public void deleteBook(int id);
-    public void deleteBook(Book book);
+
     List<Book> findBooks(Integer id, String name, String genre, String isbn, String writer, Double score);
 
     List<BookResponse> findAllAsResponses();
 
-    List<BookResponse> findBooksAsResponses(Integer id,
-                                            String name,
-                                            String genre,
-                                            String isbn,
-                                            String writer,
-                                            Double score);
+    List<BookResponse> findBooksAsResponses(Integer id, String name, String genre, String isbn,
+                                            String writer, Double score);
 
     BookResponse addBookFromRequest(CreateBookRequest body);
 }

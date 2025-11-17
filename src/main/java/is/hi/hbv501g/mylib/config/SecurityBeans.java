@@ -7,12 +7,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : Configuration class that defines security-related Spring beans.
  *
  *****************************************************************************/
 @Configuration
 public class SecurityBeans {
+    /**
+     * Creates a bean using the BCrypt hashing algorithm.
+     * @return a BCrypt-based PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

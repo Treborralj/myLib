@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
- * @author Rúnar Ágúst
- * Tölvupóstur: ras89@hi.is
- * Lýsing : 
+ * @author Róbert A. Jack, Emma Ófeigsdóttir and Rúnar Ágúst
+ * E-mail : ral9@hi.is, emo16@hi.is and ras89@hi.is
+ * Description : Entity class for bookds
  *
  *****************************************************************************/
 @Entity

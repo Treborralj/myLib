@@ -18,10 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
-
+/******************************************************************************
+ * @author Emma Ófeigsdóttir
+ * E-mail : emo16@hi.is
+ * Description : Implementation of the service interface for reviews
+ *
+ *****************************************************************************/
 @Service
 public class ReviewServiceImplementation implements ReviewService {
     private ReviewRepository reviewRepository;
@@ -46,9 +49,9 @@ public class ReviewServiceImplementation implements ReviewService {
 
 
     /**
-     * Creates a new review for the given book, authored by the logged in user.
+     * Creates a new review for the given book, authored by the logged-in user.
      *
-     * @param me the logged in user's details
+     * @param me the logged-in user's details
      * @param request the review creation payload (text, score, book id)
      * @return the created review as a DTO
      * @throws IllegalArgumentException if the account or book cannot be found
@@ -65,9 +68,9 @@ public class ReviewServiceImplementation implements ReviewService {
 
 
     /**
-     * Deletes a review if it belongs to the logged in user.
+     * Deletes a review if it belongs to the logged-in user.
      *
-     * @param me the logged in user's details
+     * @param me the logged-in user's details
      * @param id the id of the review to delete
      * @throws RuntimeException if the review is not owned by the user
      */
@@ -82,9 +85,9 @@ public class ReviewServiceImplementation implements ReviewService {
 
 
     /**
-     * Updates a review if it belongs to the logged in user.
+     * Updates a review if it belongs to the logged-in user.
      *
-     * @param me the logged in user's details
+     * @param me the logged-in user's details
      * @param dto the review update payload
      * @return the updated review as a DTO
      * @throws RuntimeException if the review is not owned by the user
