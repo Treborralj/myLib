@@ -3,13 +3,11 @@ package is.hi.hbv501g.mylib.Persistence.Entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : Entity class for posts
  *
  *****************************************************************************/
 @Entity

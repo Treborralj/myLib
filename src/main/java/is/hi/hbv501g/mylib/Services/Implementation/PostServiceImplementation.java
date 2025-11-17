@@ -15,7 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+/******************************************************************************
+ * @author Emma Ófeigsdóttir
+ * E-mail : emo16@hi.is
+ * Description : Implementation of the service interface for posts
+ *
+ *****************************************************************************/
 
 @Service
 public class PostServiceImplementation implements PostService {

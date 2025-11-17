@@ -11,13 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : JWT authentication filter that reads a Bearer token from the
+ * Authorization header and sets the Spring Security context.
  *
  *****************************************************************************/
 @Component
@@ -30,6 +30,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.uds = uds;
     }
 
+    /**
+     *  Checks the Authorization header for a Bearer token and, if present,
+     *  attempts to authenticate the associated user.
+     * @param request  the current HTTP request
+     * @param response the current HTTP response
+     * @param chain the remaining filter chain
+     * @throws ServletException if an error occurs in the filter chain
+     * @throws IOException if an I/O error occurs while processing the request
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

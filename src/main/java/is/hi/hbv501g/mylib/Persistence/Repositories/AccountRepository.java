@@ -4,10 +4,15 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
 
+/******************************************************************************
+ * @author Róbert A. Jack, Hálfdan Henrysson and Rúnar Sveinsson.
+ * E-mail : ral9@hi.is, hah130@hi.is and ras89@hi.is
+ * Description : Repository class for accounts
+ *
+ *****************************************************************************/
 public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     Optional<Account> findByUsername(String username);

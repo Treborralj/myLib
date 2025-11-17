@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /******************************************************************************
- * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing :
+ * @author Róbert A. Jack and Emma Ófeigsdóttir
+ * E-mail : ral9@hi.is and emo16@hi.is
+ * Description : Entity class for accounts
  *
  *****************************************************************************/
 @Entity

@@ -14,8 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : Main Spring Security configuration for the application.
  *
  *****************************************************************************/
 @Configuration
@@ -28,6 +28,12 @@ public class SecurityConfig {
         this.uds = uds;
     }
 
+    /**
+     * Configures the HTTP security settings for the application.
+     * @param http the HttpSecurity object used to configure security behavior
+     * @return the built SecurityFilterChain
+     * @throws Exception if the configuration fails
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -47,6 +53,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Exposes the application's AuthenticationManager as a Spring bean.
+     * @param cfg the Spring Security authentication configuration
+     * @return the configured AuthenticationManager
+     * @throws Exception if the authentication manager cannot be created
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
         return cfg.getAuthenticationManager();

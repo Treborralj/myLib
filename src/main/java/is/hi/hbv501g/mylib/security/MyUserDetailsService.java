@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : Service class used by Spring Security to load user-specific
+ * data during authentication.
  *
  *****************************************************************************/
 @Service
@@ -21,6 +22,13 @@ public class MyUserDetailsService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
+    /**
+     * Loads a user's authentication details based on their username.
+     * @param username the username of the account to look up
+     * @return an object containing the user's credentials
+     * and granted authorities
+     * @throws UsernameNotFoundException if no user with the given username exists
+     */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found:" + username));
