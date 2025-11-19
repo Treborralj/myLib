@@ -45,8 +45,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth/login", "/account/signup","/books/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/account/discoverUser/**", "/getFollowing/**",
                     "/getFollowers/**","/books/**").permitAll()
-
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.PATCH).permitAll()
+                    .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

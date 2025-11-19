@@ -7,6 +7,7 @@
     import is.hi.hbv501g.mylib.dto.Responses.*;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.security.core.userdetails.UserDetails;
@@ -189,11 +190,12 @@
          * @param dto a data transfer object containing the multipartfile for an image
          * @return a data transfer object containing the image in a 64bit String representation and account id
          */
-        @PatchMapping("/updateProfilePicture")
-        public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @RequestBody ProfilePictureRequest dto) throws IOException {
+        @PatchMapping(value ="/updateProfilePicture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @ModelAttribute ProfilePictureRequest dto) throws IOException {
             ProfilePictureResponse response = accountService.updateProfilePicture(me.getUsername(), dto);
             return ResponseEntity.ok(response);
         }
+
 
         /**
          * Fetches the Profile picture of a user
@@ -265,6 +267,7 @@
 
         /**
          * Method that returns all the users
+         * @return List of accounts username, id and bio
          */
         @GetMapping("/getAll")
         public ResponseEntity<List<DiscoverUsersByUsernameRequest>> getAllAccounts() {
@@ -280,6 +283,11 @@
             return ResponseEntity.ok(users);
         }
 
+        /**
+         * method that fetches the full account of a user
+         * @param username the username of the account
+         * @return List of accounts username, id, bio and profile picture
+         */
         @GetMapping("/profile/{username}")
         public ResponseEntity<?> getUserProfile(@PathVariable String username) {
             return ResponseEntity.ok(accountService.getUserProfile(username));
@@ -287,8 +295,9 @@
 
 
         /**
-         * Method that returns the feed of an user (i.e the posts of the people they are following)
+         * Method that returns the feed of a user (i.e the posts of the people they are following)
          * @param me the currently logged-in users credentials
+         * @return The feed for the signed in user
          */
         @GetMapping("/feed")
         public ResponseEntity<?> getFeed(@AuthenticationPrincipal UserDetails me) {

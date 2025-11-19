@@ -390,12 +390,16 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public void followUser(String followerName, String followingName){
         if (Objects.equals(followerName, followingName)){
-            throw new IllegalArgumentException( "no following yourself allowed");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "no following yourself allowed");
         }
         Account follower = accountRepository.findByUsername(followerName).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username not found"));
         Account following = accountRepository.findByUsername(followingName).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username not found"));
+
+        if (follower.getFollowing().contains(following)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already following account");
+        }
         follower.getFollowing().add(following);
         accountRepository.save(follower);
     }
