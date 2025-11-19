@@ -5,8 +5,14 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateBookRequest;
 import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+
+/******************************************************************************
+ * @author Rúnar Sveinsson.
+ * E-mail : ras89@hi.is
+ * Description : Controller for books
+ *
+ *****************************************************************************/
 
 @RestController
 @RequestMapping("/books")
@@ -17,7 +23,6 @@ public class BookController {
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
-
 
 
     /**

@@ -12,8 +12,8 @@ import java.util.Map;
 
 /******************************************************************************
  * @author Róbert A. Jack
- * Tölvupóstur: ral9@hi.is
- * Lýsing : 
+ * E-mail : ral9@hi.is
+ * Description : Controller for authentication.
  *
  *****************************************************************************/
 @RestController
@@ -42,7 +42,6 @@ public class AuthenticationController {
         String token = jwtService.generateToken(user.getUsername());
         return Map.of("token", token, "tokenType", "Bearer");
     }
-
 
     /**
      * Returns basic info about the current user.

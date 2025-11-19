@@ -1,6 +1,5 @@
 package is.hi.hbv501g.mylib.Controllers;
 
-
 import is.hi.hbv501g.mylib.Services.ReviewService;
 import is.hi.hbv501g.mylib.dto.Requests.CreateReviewRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateReviewRequest;
@@ -10,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
-
+/******************************************************************************
+ * @author Emma Ófeigsdóttir.
+ * E-mail : emo16@hi.is
+ * Description : Controller for posts.
+ *
+ *****************************************************************************/
 @RestController
 @RequestMapping("/reviews")
 public class ReviewController {
@@ -26,7 +29,7 @@ public class ReviewController {
 
 
     /**
-     * Creates a new review authored by the currently logged in user.
+     * Creates a new review authored by the currently logged-in user.
      *
      * @param me the authenticated user
      * @param body the review creation payload

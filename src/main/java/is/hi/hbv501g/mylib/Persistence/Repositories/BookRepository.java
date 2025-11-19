@@ -4,29 +4,29 @@ import is.hi.hbv501g.mylib.Persistence.Entities.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
+/******************************************************************************
+ * @author Róbert A. Jack and Rúnar Sveinsson.
+ * E-mail : ral9@hi.is and ras89@hi.is
+ * Description : Repository class for books
+ *
+ *****************************************************************************/
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
     Book save(Book book);
+
     void delete(Book book);
+
     List<Book> findAll();
-    List<Book> findBookByName(String name);
+
     Book findBookById(int id);
-    
+
     Book findByIsbn(String isbn);
-
-
-
-
-
 
     /**
      * Searches books using optional filter parameters.
      * Each parameter can be null and only declared parameters will be included in the query.
-     *
-     *
      * Example:
      * <pre>
      * searchBooks("Harry", "Fantasy", null, "Rowling", null);

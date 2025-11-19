@@ -8,9 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+/******************************************************************************
+ * @author Emma Ófeigsdóttir.
+ * E-mail : emo16@hi.is
+ * Description : Controller for posts.
+ *
+ *****************************************************************************/
 
 @RestController
 @RequestMapping("/posts")
@@ -25,7 +30,7 @@ public class PostController {
 
 
     /**
-     * Creates a new post for the currently logged in user.
+     * Creates a new post for the currently logged-in user.
      *
      * @param me the authenticated user
      * @param body the post creation payload
@@ -38,7 +43,7 @@ public class PostController {
 
 
     /**
-     * Deletes a post owned by the currently logged in user.
+     * Deletes a post owned by the currently logged-in user.
      *
      * @param me the authenticated user
      * @param id the id of the post to delete
@@ -51,7 +56,7 @@ public class PostController {
 
 
     /**
-     * Updates a post owned by the currently logged in user.
+     * Updates a post owned by the currently logged-in user.
      *
      * @param me the authenticated user
      * @param dto the post update payload

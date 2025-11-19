@@ -8,11 +8,7 @@ import is.hi.hbv501g.mylib.dto.Requests.CreateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.ProfilePictureRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdateAccountRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePasswordRequest;
-import is.hi.hbv501g.mylib.dto.Responses.BookResponse;
-import is.hi.hbv501g.mylib.dto.Responses.FollowResponse;
-import is.hi.hbv501g.mylib.dto.Responses.ProfilePictureResponse;
-import is.hi.hbv501g.mylib.dto.Responses.SignInResponse;
-import is.hi.hbv501g.mylib.dto.Responses.UpdateAccountResponse;
+import is.hi.hbv501g.mylib.dto.Responses.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-
-import is.hi.hbv501g.mylib.dto.Responses.UserProfileResponse;
-import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
-import is.hi.hbv501g.mylib.dto.Responses.ReviewResponse;
-import java.util.Base64;
 import java.io.IOException;
+import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Iterator;
 
-
+/******************************************************************************
+ * @author Róbert A. Jack, Hálfdan Henrysson and Rúnar Sveinsson.
+ * E-mail : ral9@hi.is, hah130@hi.is and ras89@hi.is
+ * Description : Implementation of the service interface for accounts
+ *
+ *****************************************************************************/
 @Service
 public class AccountServiceImplementation implements AccountService {
     private AccountRepository accountRepository;
@@ -41,28 +37,6 @@ public class AccountServiceImplementation implements AccountService {
     public AccountServiceImplementation(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-
-    /**
-     * Saves the given account to the repository.
-     *
-     * @param account the account to save
-     * @return the saved account 
-     */
-    @Override
-    public Account save(Account account) {
-        return accountRepository.save(account);
-    }
-
-    /**
-     * Deletes the given account from the repository.
-     *
-     * @param account the account to delete
-     */
-    @Override
-    public void delete(Account account) {
-        accountRepository.delete(account);
     }
 
     /**
@@ -201,18 +175,6 @@ public class AccountServiceImplementation implements AccountService {
     }
 
     /**
-     * Looks up an account by its username.
-     *
-     * @param username the username to search for
-     * @return an Optional containing the account if found
-     */
-    @Override
-    public Optional<Account> findByUsername(String username) {
-        return accountRepository.findByUsername(username);
-    }
-
-
-    /**
      * Finds accounts whose username contains the given string
      *
      * @param username the full or partial username to search for
@@ -221,25 +183,6 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public List<Account> discoverAccountByUsername(String username){
         return accountRepository.findByUsernameContainingIgnoreCase(username);
-    }
-
-
-    /**
-     * Validates the provided username and password against stored credentials.
-     *
-     * @param username the username to authenticate
-     * @param password the raw password to check
-     * @return a DTO with minimal account info if credentials are valid
-     * @throws IllegalArgumentException if username is unknown or password is wrong
-     */
-    @Override
-    public SignInResponse login(String username, String password) {
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Username not found"));
-        if (!passwordEncoder.matches(password, account.getPassword())) {
-            throw new IllegalArgumentException("Invalid Password");
-        }
-        return new SignInResponse(account.getId(), account.getUsername());
     }
 
     /**
@@ -447,12 +390,16 @@ public class AccountServiceImplementation implements AccountService {
     @Override
     public void followUser(String followerName, String followingName){
         if (Objects.equals(followerName, followingName)){
-            throw new IllegalArgumentException( "no following yourself allowed");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "no following yourself allowed");
         }
         Account follower = accountRepository.findByUsername(followerName).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username not found"));
         Account following = accountRepository.findByUsername(followingName).
-                orElseThrow(() -> new IllegalArgumentException("Username not found"));
+                orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username not found"));
+
+        if (follower.getFollowing().contains(following)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already following account");
+        }
         follower.getFollowing().add(following);
         accountRepository.save(follower);
     }

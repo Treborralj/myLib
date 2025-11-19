@@ -7,16 +7,21 @@
     import is.hi.hbv501g.mylib.dto.Responses.*;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
+    import org.springframework.http.MediaType;
     import org.springframework.http.ResponseEntity;
     import org.springframework.security.core.annotation.AuthenticationPrincipal;
     import org.springframework.security.core.userdetails.UserDetails;
     import org.springframework.web.bind.annotation.*;
-
     import java.util.List;
-
     import java.io.IOException;
     import java.util.Map;
 
+    /******************************************************************************
+     * @author Róbert A. Jack, Hálfdan Henrysson, Rúnar Sveinsson and Emma Ófeigsdóttir.
+     * E-mail : ral9@hi.is, hah130@hi.is, ras89@hi.is and emo16@hi.is
+     * Description : Controller for account functionalities
+     *
+     *****************************************************************************/
 
     @RestController
     @RequestMapping("/account")
@@ -94,17 +99,17 @@
         }
 
         /**
-         *  Returns the wantToRead list of a logged in user
+         *  Returns the wantToRead list of a logged-in user
          * @param me the currently logged-in users credentials
         * @return List<BookResponse>
         */
-    @GetMapping("/getWantToRead")
-    public List<BookResponse> getWantToRead(@AuthenticationPrincipal UserDetails me) {
-        return accountService.getWantToRead(me.getUsername());
-    }
+        @GetMapping("/getWantToRead")
+        public List<BookResponse> getWantToRead(@AuthenticationPrincipal UserDetails me) {
+            return accountService.getWantToRead(me.getUsername());
+        }
 
         /**
-         * Takes in the logged in users account and a book and adds the book to the wantToRead list associated with the account
+         * Takes in the logged-in users account and a book and adds the book to the wantToRead list associated with the account
          * @param me the currently logged-in users credentials
          * @param book the book
          */
@@ -114,7 +119,7 @@
         }
 
         /**
-         * Takes in the logged in users account  and a book id and removes the book from the wantToRead list associated with the account
+         * Takes in the logged-in users account  and a book id and removes the book from the wantToRead list associated with the account
          * @param me the currently logged-in users credentials
          * @param bookId the books id
          */
@@ -123,7 +128,7 @@
             accountService.removeBookFromWantToRead(me.getUsername(), bookId);
         }
         /**
-         *  Takes in the logged in users account  id and returns the haveRead list associated with the account
+         *  Takes in the logged-in users account  id and returns the haveRead list associated with the account
          * @param me the currently logged-in users credentials
         * @return List<BookResponse>
          */
@@ -133,7 +138,7 @@
         }
 
         /**
-         * Takes in an the logged in users account  and a book and adds the book to the haveRead list associated with the account
+         * Takes in the logged-in users account  and a book and adds the book to the haveRead list associated with the account
          * @param me the currently logged-in users credentials
          * @param book
          */
@@ -142,7 +147,7 @@
             accountService.addBookToHaveRead(me.getUsername(), book);
         }
         /**
-         * Takes in an the logged in users account  and a book id and removes the book from the haveRead list associated with the account
+         * Takes in the logged-in users account  and a book id and removes the book from the haveRead list associated with the account
          * @param me the currently logged-in users credentials
          * @param bookId
          */
@@ -151,7 +156,7 @@
             accountService.removeBookFromHaveRead(me.getUsername(), bookId);
         }
         /**
-         *  Takes in an the log ged in users account  and returns the amReading list associated with the account
+         *  Takes in the logged-in users account  and returns the amReading list associated with the account
          * @param me the currently logged-in users credentials
         * @return List<BookResponse>
 
@@ -161,7 +166,7 @@
             return accountService.getAmReading(me.getUsername());
         }
         /**
-         * Takes in an the logged in users account  and a book and adds the book to the amReading list associated with the account
+         * Takes in the logged-in users account  and a book and adds the book to the amReading list associated with the account
          * @param me the currently logged-in users credentials
          * @param book
          */
@@ -170,7 +175,7 @@
             accountService.addBookToAmReading(me.getUsername(), book);
         }
         /**
-         * Takes in an the logged in users account  and a book id and removes the book from the amReading list associated with the account
+         * Takes in the logged-in users account  and a book id and removes the book from the amReading list associated with the account
          * @param me the currently logged-in users credentials
          * @param bookId
          */
@@ -185,11 +190,12 @@
          * @param dto a data transfer object containing the multipartfile for an image
          * @return a data transfer object containing the image in a 64bit String representation and account id
          */
-        @PatchMapping("/updateProfilePicture")
-        public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @RequestBody ProfilePictureRequest dto) throws IOException {
+        @PatchMapping(value ="/updateProfilePicture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ResponseEntity<?> updateProfilePicture(@AuthenticationPrincipal UserDetails me, @ModelAttribute ProfilePictureRequest dto) throws IOException {
             ProfilePictureResponse response = accountService.updateProfilePicture(me.getUsername(), dto);
             return ResponseEntity.ok(response);
         }
+
 
         /**
          * Fetches the Profile picture of a user
@@ -261,6 +267,7 @@
 
         /**
          * Method that returns all the users
+         * @return List of accounts username, id and bio
          */
         @GetMapping("/getAll")
         public ResponseEntity<List<DiscoverUsersByUsernameRequest>> getAllAccounts() {
@@ -276,6 +283,11 @@
             return ResponseEntity.ok(users);
         }
 
+        /**
+         * method that fetches the full account of a user
+         * @param username the username of the account
+         * @return List of accounts username, id, bio and profile picture
+         */
         @GetMapping("/profile/{username}")
         public ResponseEntity<?> getUserProfile(@PathVariable String username) {
             return ResponseEntity.ok(accountService.getUserProfile(username));
@@ -283,8 +295,9 @@
 
 
         /**
-         * Method that returns the feed of an user (i.e the posts of the people they are following)
+         * Method that returns the feed of a user (i.e the posts of the people they are following)
          * @param me the currently logged-in users credentials
+         * @return The feed for the signed in user
          */
         @GetMapping("/feed")
         public ResponseEntity<?> getFeed(@AuthenticationPrincipal UserDetails me) {
