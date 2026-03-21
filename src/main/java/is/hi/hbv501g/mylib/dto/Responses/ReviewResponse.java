@@ -1,20 +1,21 @@
 package is.hi.hbv501g.mylib.dto.Responses;
 
-import is.hi.hbv501g.mylib.Persistence.Entities.Account;
-import is.hi.hbv501g.mylib.Persistence.Entities.Book;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReviewResponse {
     private int id;
+    private int bookId;
+    private int accountId;
+    private String username;
     private String text;
     private LocalDateTime time;
     private double score;
 
-    public ReviewResponse(int id, String text, LocalDateTime time, double score) {
+    public ReviewResponse(int id, int bookId, int accountId, String username, String text, LocalDateTime time, double score) {
         this.id = id;
+        this.bookId = bookId;
+        this.accountId = accountId;
+        this.username = username;
         this.text = text;
         this.time = time;
         this.score = score;
@@ -26,6 +27,30 @@ public class ReviewResponse {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getText() {
@@ -51,5 +76,4 @@ public class ReviewResponse {
     public void setScore(double score) {
         this.score = score;
     }
-
 }

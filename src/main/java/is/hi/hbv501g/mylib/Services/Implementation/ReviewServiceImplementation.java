@@ -38,15 +38,16 @@ public class ReviewServiceImplementation implements ReviewService {
     }
 
     private ReviewResponse toDto(Review r) {
-
         return new ReviewResponse(
-                r.getId(),
-                r.getText(),
-                r.getTime(),
-                r.getScore()
+            r.getId(),
+            r.getBook().getId(),
+            r.getAccount().getUsername(),
+            r.getText(),
+            r.getTime(),
+            r.getScore(),
+            r.getAccount().getId()
         );
     }
-
 
     /**
      * Creates a new review for the given book, authored by the logged-in user.
