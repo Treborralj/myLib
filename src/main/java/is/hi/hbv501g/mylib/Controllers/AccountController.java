@@ -93,9 +93,12 @@
          * @return 200 if updated successfully
         */
         @PatchMapping("/changePassword")
-        public ResponseEntity<?> updatePassword(@AuthenticationPrincipal UserDetails me, @RequestBody UpdatePasswordRequest dto){
+        public ResponseEntity<UpdatePasswordResponse> updatePassword(
+                @AuthenticationPrincipal UserDetails me,
+                @RequestBody UpdatePasswordRequest dto
+        ){
             accountService.updatePassword(me.getUsername(), dto);
-            return ResponseEntity.ok("password updated succesfully");
+            return ResponseEntity.ok(new UpdatePasswordResponse("Password updated successfully"));
         }
 
         /**
