@@ -491,11 +491,21 @@ public class AccountServiceImplementation implements AccountService {
 
         List<PostResponse> posts = account.getPosts()
                 .stream()
-                .map(p -> new PostResponse(
-                        p.getId(),
-                        p.getText(),
-                        p.getTime()
-                ))
+                .map(p -> {
+                    String imageBase64 = null;
+                    if(p.getImage() != null){
+                        imageBase64 = Base64.getEncoder().encodeToString(p.getImage());
+                    }
+                    return new PostResponse(
+                            p.getId(),
+                            p.getAccount().getUsername(),
+                            p.getTitle(),
+                            p.getText(),
+                            p.getTime(),
+                            imageBase64,
+                            p.getImageType()
+                    );
+                })
                 .toList();
 
         List<ReviewResponse> reviews = account.getReviews()
@@ -536,11 +546,21 @@ public class AccountServiceImplementation implements AccountService {
         return following.stream()
                 .flatMap(acc -> acc.getPosts().stream())
                 .sorted((p1, p2) -> p2.getTime().compareTo(p1.getTime()))
-                .map(p -> new PostResponse(
-                        p.getId(),
-                        p.getText(),
-                        p.getTime()
-                ))
+                .map(p -> {
+                    String imageBase64 = null;
+                    if(p.getImage() != null){
+                        imageBase64 = Base64.getEncoder().encodeToString(p.getImage());
+                    }
+                    return new PostResponse(
+                            p.getId(),
+                            p.getAccount().getUsername(),
+                            p.getTitle(),
+                            p.getText(),
+                            p.getTime(),
+                            imageBase64,
+                            p.getImageType()
+                    );
+                })
                 .toList();
     }
 
