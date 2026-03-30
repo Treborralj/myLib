@@ -5,9 +5,12 @@ import is.hi.hbv501g.mylib.dto.Requests.CreatePostRequest;
 import is.hi.hbv501g.mylib.dto.Requests.UpdatePostRequest;
 import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 
 /******************************************************************************
@@ -36,8 +39,8 @@ public class PostController {
      * @param body the post creation payload
      * @return the created post
      */
-    @PostMapping("/add")
-    public PostResponse addPost(@AuthenticationPrincipal UserDetails me, @RequestBody CreatePostRequest body) {
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostResponse addPost(@AuthenticationPrincipal UserDetails me, @ModelAttribute CreatePostRequest body) throws IOException {
         return postService.addPost(me, body);
     }
 
@@ -62,8 +65,8 @@ public class PostController {
      * @param dto the post update payload
      * @return the updated post
      */
-    @PatchMapping("/edit")
-    public PostResponse updatePost(@AuthenticationPrincipal UserDetails me, @RequestBody UpdatePostRequest dto){
+    @PatchMapping(value = "/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public PostResponse updatePost(@AuthenticationPrincipal UserDetails me, @ModelAttribute UpdatePostRequest dto)throws IOException {
         return postService.updatePost(me, dto);
     }
 

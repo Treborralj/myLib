@@ -5,6 +5,7 @@ import is.hi.hbv501g.mylib.dto.Requests.UpdatePostRequest;
 import is.hi.hbv501g.mylib.dto.Responses.PostResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.IOException;
 import java.util.List;
 
 /******************************************************************************
@@ -14,8 +15,8 @@ import java.util.List;
  *
  *****************************************************************************/
 public interface PostService {
-    public PostResponse addPost(UserDetails me, CreatePostRequest request);
+    public PostResponse addPost(UserDetails me, CreatePostRequest request) throws IOException;
     public void deletePost(UserDetails me, int id);
-    public PostResponse updatePost(UserDetails me, UpdatePostRequest dto);
+    public PostResponse updatePost(UserDetails me, UpdatePostRequest dto) throws IOException;
     public List<PostResponse> getAccountPosts(String username);
 }

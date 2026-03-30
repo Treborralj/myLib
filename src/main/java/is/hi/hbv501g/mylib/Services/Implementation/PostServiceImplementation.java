@@ -13,7 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 /******************************************************************************
  * @author Emma Ófeigsdóttir
@@ -34,11 +36,19 @@ public class PostServiceImplementation implements PostService {
     }
 
     private PostResponse toDto(Post p) {
+        String imageBase64 = null;
+        if(p.getImage() != null){
+            imageBase64 = Base64.getEncoder().encodeToString(p.getImage());
+        }
 
         return new PostResponse(
                 p.getId(),
+                p.getAccount().getUsername(),
+                p.getTitle(),
                 p.getText(),
-                p.getTime()
+                p.getTime(),
+                imageBase64,
+                p.getImageType()
         );
     }
 
@@ -51,12 +61,25 @@ public class PostServiceImplementation implements PostService {
      * @return the created post as a DTO
      */
     @Override
-    public PostResponse addPost(UserDetails me, CreatePostRequest request) {
+    public PostResponse addPost(UserDetails me, CreatePostRequest request) throws IOException {
         Account account = accountRepository.findByUsername(me.getUsername()).
                 orElseThrow(() -> new RuntimeException("Account not found"));
-        LocalDateTime time = LocalDateTime.now();
-        Post post = postRepository.save(new Post(request.getText(), account, time));
-        return toDto(post);
+        byte[] imageBytes = null;
+        String imageType = null;
+        if(request.getFile() != null && !request.getFile().isEmpty()){
+            imageBytes = request.getFile().getBytes();
+            imageType = request.getFile().getContentType();
+        }
+        Post post = new Post(
+                request.getTitle(),
+                request.getText(),
+                imageBytes,
+                imageType,
+                account,
+                LocalDateTime.now()
+        );
+
+        return toDto(postRepository.save(post));
     }
 
 
@@ -85,13 +108,22 @@ public class PostServiceImplementation implements PostService {
      */
     @Override
     @Transactional
-    public PostResponse updatePost(UserDetails me, UpdatePostRequest dto) {
+    public PostResponse updatePost(UserDetails me, UpdatePostRequest dto) throws IOException {
         Post post = postRepository.findPostById(dto.getId());
         if(!post.getAccount().getUsername().equals(me.getUsername())) {
             throw new RuntimeException("Users can only edit their own posts");
         }
-        if(dto.getText() != null) {post.setText(dto.getText());}
-        post.setAccount(post.getAccount());
+        if (dto.getTitle() != null){
+            post.setTitle(dto.getTitle());
+        }
+        if(dto.getText() != null) {
+            post.setText(dto.getText());
+        }
+        if(dto.getFile() != null && !dto.getFile().isEmpty()){
+            post.setImage(dto.getFile().getBytes());
+            post.setImageType(dto.getFile().getContentType());
+        }
+
         return toDto(postRepository.save(post));
     }
 
