@@ -7,6 +7,7 @@ public class UserProfileResponse {
     private String username;
     private String bio;
     private String profilePictureBase64; 
+    private String imageType;
     private List<PostResponse> posts;
     private List<ReviewResponse> reviews;
     private List<FollowResponse> followers;
@@ -16,6 +17,7 @@ public class UserProfileResponse {
                                String username,
                                String bio,
                                String profilePictureBase64,
+                               String imageType,
                                List<PostResponse> posts,
                                List<ReviewResponse> reviews,
                                List<FollowResponse> followers,
@@ -24,6 +26,7 @@ public class UserProfileResponse {
         this.username = username;
         this.bio = bio;
         this.profilePictureBase64 = profilePictureBase64;
+        this.imageType = imageType;
         this.posts = posts;
         this.reviews = reviews;
         this.followers = followers;
@@ -34,6 +37,7 @@ public class UserProfileResponse {
     public String getUsername() { return username; }
     public String getBio() { return bio; }
     public String getProfilePictureBase64() { return profilePictureBase64; }
+    public String getImageType() { return imageType; }
     public List<PostResponse> getPosts() { return posts; }
     public List<ReviewResponse> getReviews() { return reviews; }
     public List<FollowResponse> getFollowers() { return followers; }

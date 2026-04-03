@@ -76,6 +76,7 @@ public class AccountServiceImplementation implements AccountService {
 
         try {
             account.setProfilePic(file.getBytes());
+            account.setImageType(file.getContentType());
             accountRepository.save(account);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
@@ -531,6 +532,7 @@ public class AccountServiceImplementation implements AccountService {
                     account.getUsername(),
                     account.getBio(),
                     profilePictureBase64,
+                    account.getImageType(),
                     posts,
                     reviews,
                     followers,

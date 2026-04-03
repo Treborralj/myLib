@@ -25,6 +25,10 @@ public class Account {
     @Column(name = "profile_pic")
     private byte[] profilePic;
 
+    @Column(name = "image_type")
+    private String imageType;
+
+
     @ManyToMany
     @JoinTable(name = "account_following", joinColumns = @JoinColumn(name = "follower_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_id"))
@@ -95,6 +99,14 @@ public class Account {
 
     public void setProfilePic(byte[] profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public String getImageType() {
+        return imageType;
+    }   
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
     }
 
     public List<Account> getFollowing() {
