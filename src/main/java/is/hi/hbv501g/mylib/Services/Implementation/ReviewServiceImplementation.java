@@ -38,13 +38,19 @@ public class ReviewServiceImplementation implements ReviewService {
     }
 
     private ReviewResponse toDto(Review r) {
-
-        return new ReviewResponse(
+        ReviewResponse dto = new ReviewResponse(
                 r.getId(),
                 r.getText(),
                 r.getTime(),
                 r.getScore()
         );
+
+        dto.setAccountId(r.getAccount().getId());
+        dto.setUsername(r.getAccount().getUsername());
+        dto.setBookId(r.getBook().getId());
+        dto.setBookTitle(r.getBook().getName());
+
+        return dto;
     }
 
 
