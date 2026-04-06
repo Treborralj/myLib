@@ -76,6 +76,7 @@ public class AccountServiceImplementation implements AccountService {
 
         try {
             account.setProfilePic(file.getBytes());
+            account.setImageType(file.getContentType());
             accountRepository.save(account);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
@@ -510,12 +511,19 @@ public class AccountServiceImplementation implements AccountService {
 
         List<ReviewResponse> reviews = account.getReviews()
                 .stream()
-                .map(r -> new ReviewResponse(
-                        r.getId(),
-                        r.getText(),
-                        r.getTime(),
-                        r.getScore()
-                ))
+                .map(r -> {
+                    ReviewResponse dto = new ReviewResponse(
+                            r.getId(),
+                            r.getText(),
+                            r.getTime(),
+                            r.getScore()
+                    );
+                    dto.setAccountId(r.getAccount().getId());
+                    dto.setUsername(r.getAccount().getUsername());
+                    dto.setBookId(r.getBook().getId());
+                    dto.setBookTitle(r.getBook().getName());
+                    return dto;
+                })
                 .toList();
 
         List<FollowResponse> following = getFollowing(username);
@@ -531,6 +539,7 @@ public class AccountServiceImplementation implements AccountService {
                     account.getUsername(),
                     account.getBio(),
                     profilePictureBase64,
+                    account.getImageType(),
                     posts,
                     reviews,
                     followers,

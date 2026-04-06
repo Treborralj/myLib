@@ -38,13 +38,19 @@ public class ReviewServiceImplementation implements ReviewService {
     }
 
     private ReviewResponse toDto(Review r) {
-
-        return new ReviewResponse(
+        ReviewResponse dto = new ReviewResponse(
                 r.getId(),
                 r.getText(),
                 r.getTime(),
                 r.getScore()
         );
+
+        dto.setAccountId(r.getAccount().getId());
+        dto.setUsername(r.getAccount().getUsername());
+        dto.setBookId(r.getBook().getId());
+        dto.setBookTitle(r.getBook().getName());
+
+        return dto;
     }
 
 
@@ -57,12 +63,14 @@ public class ReviewServiceImplementation implements ReviewService {
      * @throws IllegalArgumentException if the account or book cannot be found
      */
     @Override
+    @Transactional
     public ReviewResponse addReview(UserDetails me, CreateReviewRequest request) {
         Book book = bookRepository.findBookById(request.getBookId());
         Account account = accountRepository.findByUsername(me.getUsername()).
                 orElseThrow(() -> new RuntimeException("Account not found"));
         LocalDateTime time = LocalDateTime.now();
         Review review = reviewRepository.save(new Review(request.getText(), account, book, time, request.getScore()));
+        updateBookScore(book);
         return toDto(review);
     }
 
@@ -75,12 +83,19 @@ public class ReviewServiceImplementation implements ReviewService {
      * @throws RuntimeException if the review is not owned by the user
      */
     @Override
+    @Transactional
     public void deleteReview(UserDetails me, int id) {
         Review review = reviewRepository.findReviewById(id);
         if(!review.getAccount().getUsername().equals(me.getUsername())) {
             throw new RuntimeException("Users can only delete their own reviews");
         }
-        reviewRepository.deleteById(id);
+        Book book = review.getBook();
+
+        reviewRepository.delete(review);
+        reviewRepository.flush();
+
+        updateBookScore(book);
+        
     }
 
 
@@ -102,7 +117,10 @@ public class ReviewServiceImplementation implements ReviewService {
         if(dto.getText() != null) {review.setText(dto.getText());}
         review.setScore(dto.getScore());
         review.setAccount(review.getAccount());
-        return toDto(reviewRepository.save(review));
+        Review saved = reviewRepository.save(review);
+        updateBookScore(saved.getBook());
+
+        return toDto(saved);
     }
 
     /**
@@ -154,5 +172,15 @@ public class ReviewServiceImplementation implements ReviewService {
         Review review = reviewRepository.findReviewById(reviewId);
         Account acc = review.getAccount();
         return new UpdateAccountResponse(acc.getId(),acc.getUsername(),acc.getBio());
+    }
+
+    private void updateBookScore(Book book) {
+        Double avg = reviewRepository.getAverageScoreForBook(book.getId());
+        double score = avg != null ? avg : 0.0;
+
+        score = Math.round(score * 10.0) / 10.0;
+
+        book.setScore(score);
+        bookRepository.save(book);
     }
 }
