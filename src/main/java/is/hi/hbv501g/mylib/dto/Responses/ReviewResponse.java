@@ -17,13 +17,18 @@ public class ReviewResponse {
     private int bookId;
     private String bookTitle;
 
-    public ReviewResponse(int id, String text, LocalDateTime time, double score) {
+    public ReviewResponse(int id, String text, LocalDateTime time, double score,
+                        int accountId, String username,
+                        int bookId, String bookTitle) {
         this.id = id;
         this.text = text;
         this.time = time;
         this.score = score;
+        this.accountId = accountId;
+        this.username = username;
+        this.bookId = bookId;
+        this.bookTitle = bookTitle;
     }
-
     public int getId() {
         return id;
     }

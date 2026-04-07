@@ -512,17 +512,16 @@ public class AccountServiceImplementation implements AccountService {
         List<ReviewResponse> reviews = account.getReviews()
                 .stream()
                 .map(r -> {
-                    ReviewResponse dto = new ReviewResponse(
+                    return new ReviewResponse(
                             r.getId(),
                             r.getText(),
                             r.getTime(),
-                            r.getScore()
+                            r.getScore(),
+                            r.getAccount().getId(),
+                            r.getAccount().getUsername(),
+                            r.getBook().getId(),
+                            r.getBook().getName()
                     );
-                    dto.setAccountId(r.getAccount().getId());
-                    dto.setUsername(r.getAccount().getUsername());
-                    dto.setBookId(r.getBook().getId());
-                    dto.setBookTitle(r.getBook().getName());
-                    return dto;
                 })
                 .toList();
 
